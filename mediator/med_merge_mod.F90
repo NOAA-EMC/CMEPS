@@ -35,6 +35,7 @@ module med_merge_mod
 
   private :: med_merge_auto_field
 
+  character(len=CL) :: errmsg
   character(*),parameter :: u_FILE_u = &
        __FILE__
 
@@ -44,10 +45,9 @@ contains
 
   subroutine med_merge_auto(compout_name, FBOut, FBfrac, FBImp, fldListTo, FBMed1, FBMed2, rc)
 
-    use ESMF , only : ESMF_FieldBundle, ESMF_FieldBundleIsCreated, ESMF_FieldBundleGet
-    use ESMF , only : ESMF_Field, ESMF_FieldGet
-    use ESMF , only : ESMF_SUCCESS, ESMF_FAILURE
-    use ESMF , only : ESMF_LogWrite, ESMF_LOGMSG_INFO, ESMF_LOGMSG_ERROR
+    use ESMF , only : ESMF_FieldBundle
+    use ESMF , only : ESMF_FieldBundleIsCreated, ESMF_FieldBundleGet
+    use ESMF , only : ESMF_SUCCESS, ESMF_FAILURE, ESMF_LogWrite, ESMF_LogMsg_Info
     use ESMF , only : ESMF_LogSetError, ESMF_RC_OBJ_NOT_CREATED
 
     ! ----------------------------------------------
@@ -59,7 +59,7 @@ contains
     type(ESMF_FieldBundle)       , intent(inout)         :: FBOut        ! Merged output field bundle
     type(ESMF_FieldBundle)       , intent(inout)         :: FBfrac       ! Fraction data for FBOut
     type(ESMF_FieldBundle)       , intent(in)            :: FBImp(:)     ! Array of field bundles each mapping to the FBOut mesh
-    type(med_fldList_type)       , intent(in)            :: fldListTo    ! Information for merging
+    type(med_fldList_type) , intent(in)            :: fldListTo    ! Information for merging
     type(ESMF_FieldBundle)       , intent(in) , optional :: FBMed1       ! mediator field bundle
     type(ESMF_FieldBundle)       , intent(in) , optional :: FBMed2       ! mediator field bundle
     integer                      , intent(out)           :: rc
@@ -72,11 +72,12 @@ contains
     character(CX) :: merge_field
     character(CS) :: merge_type
     character(CS) :: merge_fracname
+    integer       :: dbrc
     character(len=*),parameter :: subname=' (module_med_merge_mod: med_merge_auto)'
     !---------------------------------------
     call t_startf('MED:'//subname)
 
-    call ESMF_LogWrite(trim(subname)//": called", ESMF_LOGMSG_INFO)
+    call ESMF_LogWrite(trim(subname)//": called", ESMF_LOGMSG_INFO, rc=dbrc)
     rc = ESMF_SUCCESS
 
     call FB_reset(FBOut, value=czero, rc=rc)
@@ -147,7 +148,7 @@ contains
 
                             else
                                call ESMF_LogWrite(trim(subname)//": ERROR merge_field = "//trim(merge_field)//" not found", &
-                                    ESMF_LOGMSG_ERROR, rc=rc)
+                                    ESMF_LOGMSG_INFO, rc=rc)
                                rc = ESMF_FAILURE
                                if (ChkErr(rc,__LINE__,u_FILE_u)) return
                             end if
@@ -166,7 +167,7 @@ contains
 
                             else
                                call ESMF_LogWrite(trim(subname)//": ERROR merge_field = "//trim(merge_field)//"not found", &
-                                    ESMF_LOGMSG_ERROR, rc=rc)
+                                    ESMF_LOGMSG_INFO, rc=rc)
                                rc = ESMF_FAILURE
                                if (ChkErr(rc,__LINE__,u_FILE_u)) return
                             end if
@@ -193,7 +194,7 @@ contains
     !--- clean up
     !---------------------------------------
 
-    call ESMF_LogWrite(trim(subname)//": done", ESMF_LOGMSG_INFO)
+    call ESMF_LogWrite(trim(subname)//": done", ESMF_LOGMSG_INFO, rc=dbrc)
     call t_stopf('MED:'//subname)
 
   end subroutine med_merge_auto
@@ -223,14 +224,11 @@ contains
     real(R8), pointer :: dp1 (:), dp2(:,:)         ! output pointers to 1d and 2d fields
     real(R8), pointer :: dpf1(:), dpf2(:,:)        ! intput pointers to 1d and 2d fields
     real(R8), pointer :: dpw1(:)                   ! weight pointer
-    integer           :: lrank_input               ! rank of input array
-    integer           :: lrank_output              ! rank of output array
+    integer           :: lrank                     ! rank of array
     integer           :: ungriddedUBound_output(1) ! currently the size must equal 1 for rank 2 fieldds
     integer           :: ungriddedUBound_input(1)  ! currently the size must equal 1 for rank 2 fieldds
     integer           :: gridToFieldMap_output(1)  ! currently the size must equal 1 for rank 2 fieldds
     integer           :: gridToFieldMap_input(1)   ! currently the size must equal 1 for rank 2 fieldds
-    character(len=CL) :: errmsg
-    character(len=CL) :: msg
     character(len=*),parameter :: subname=' (med_merge_mod: med_merge)'
     !---------------------------------------
 
@@ -260,19 +258,14 @@ contains
     !-------------------------
 
     ! Get field pointer to output field
-    call ESMF_FieldBundleGet(FBout, trim(FBoutfld), field=lfield, rc=rc)
+    call ESMF_FieldBundleGet(FBout, fieldName=trim(FBoutfld), field=lfield, rc=rc)
     if (chkerr(rc,__LINE__,u_FILE_u)) return
-    call ESMF_FieldGet(lfield, rank=lrank_output, rc=rc)
+    call ESMF_FieldGet(lfield, rank=lrank, rc=rc)
     if (chkerr(rc,__LINE__,u_FILE_u)) return
-    if (dbug_flag > 1) then
-       write(msg,*)trim(subname),'output field ',trim(FBoutfld),' has rank ',lrank_output
-       call ESMF_LogWrite(msg, ESMF_LOGMSG_INFO)
-    end if
-
-    if (lrank_output == 1) then
+    if (lrank == 1) then
        call ESMF_FieldGet(lfield, farrayPtr=dp1, rc=rc)
        if (chkerr(rc,__LINE__,u_FILE_u)) return
-    else if (lrank_output == 2) then
+    else if (lrank == 2) then
        call ESMF_FieldGet(lfield, ungriddedUBound=ungriddedUBound_output, &
             gridToFieldMap=gridToFieldMap_output, rc=rc)
        if (chkerr(rc,__LINE__,u_FILE_u)) return
@@ -281,19 +274,14 @@ contains
     end if
 
     ! Get field pointer to input field used in the merge
-    call ESMF_FieldBundleGet(FB, FBfld, field=lfield, rc=rc)
+    call ESMF_FieldBundleGet(FB, fieldName=trim(FBfld), field=lfield, rc=rc)
     if (chkerr(rc,__LINE__,u_FILE_u)) return
-    call ESMF_FieldGet(lfield, rank=lrank_input, rc=rc)
+    call ESMF_FieldGet(lfield, rank=lrank, rc=rc)
     if (chkerr(rc,__LINE__,u_FILE_u)) return
-    if (dbug_flag > 1) then
-       write(msg,*)trim(subname),'input field ',trim(FBfld),' has rank ',lrank_input
-       call ESMF_LogWrite(msg, ESMF_LOGMSG_ERROR)
-    end if
-
-    if (lrank_input == 1) then
+    if (lrank == 1) then
        call ESMF_FieldGet(lfield, farrayPtr=dpf1, rc=rc)
        if (chkerr(rc,__LINE__,u_FILE_u)) return
-    else if (lrank_input == 2) then
+    else if (lrank == 2) then
        call ESMF_FieldGet(lfield, ungriddedUBound=ungriddedUBound_input, &
             gridToFieldMap=gridToFieldMap_input, rc=rc)
        if (chkerr(rc,__LINE__,u_FILE_u)) return
@@ -302,28 +290,22 @@ contains
     end if
 
     ! error checks
-    if (lrank_input /= lrank_output) then
-       write(errmsg,*) trim(subname),' input field rank ',lrank_input,' for '//trim(FBfld), &
-            ' not equal to output field rank ',lrank_output,' for '//trim(FBoutfld) 
-       call ESMF_LogWrite(errmsg, ESMF_LOGMSG_ERROR)
-       rc = ESMF_FAILURE
-       return
-    else if (lrank_output == 2) then
+    if (lrank == 2) then
        if (ungriddedUBound_output(1) /= ungriddedUBound_input(1)) then
           write(errmsg,*) trim(subname),"ungriddedUBound_input (",ungriddedUBound_input(1),&
-               ") not equal to ungriddedUBound_output (",ungriddedUBound_output(1),") for "//trim(FBoutfld) 
+               ") not equal to ungriddedUBound_output (",ungriddedUBound_output(1),")"
           call ESMF_LogWrite(errmsg, ESMF_LOGMSG_ERROR)
           rc = ESMF_FAILURE
           return
        else if (gridToFieldMap_input(1) /= gridToFieldMap_output(1)) then
           write(errmsg,*) trim(subname),"gridtofieldmap_input (",gridtofieldmap_input(1),&
-               ") not equal to gridtofieldmap_output (",gridtofieldmap_output(1),") for "//trim(FBoutfld)
+               ") not equal to gridtofieldmap_output (",gridtofieldmap_output(1),")"
           call ESMF_LogWrite(errmsg, ESMF_LOGMSG_ERROR)
+
           rc = ESMF_FAILURE
           return
        end if
     endif
-
     ! Get pointer to weights that weights are only rank 1
     if (merge_type == 'copy_with_weights' .or. merge_type == 'merge' .or. merge_type == 'sum_with_weights') then
        call ESMF_FieldBundleGet(FBw, fieldName=trim(fldw), field=lfield, rc=rc)
@@ -334,13 +316,13 @@ contains
 
     ! Do supported merges
     if (trim(merge_type)  == 'copy') then
-       if (lrank_output == 1) then
+       if (lrank == 1) then
           dp1(:) = dpf1(:)
        else
           dp2(:,:) = dpf2(:,:)
        endif
     else if (trim(merge_type)  == 'copy_with_weights') then
-       if (lrank_output == 1) then
+       if (lrank == 1) then
           dp1(:) = dpf1(:)*dpw1(:)
        else
           do n = 1,ungriddedUBound_input(1)
@@ -352,7 +334,7 @@ contains
           end do
        endif
     else if (trim(merge_type)  == 'merge' .or. trim(merge_type) == 'sum_with_weights') then
-       if (lrank_output == 1) then
+       if (lrank == 1) then
           dp1(:) = dp1(:) + dpf1(:)*dpw1(:)
        else
           do n = 1,ungriddedUBound_input(1)
@@ -364,7 +346,7 @@ contains
           end do
        endif
     else if (trim(merge_type) == 'sum') then
-       if (lrank_output == 1) then
+       if (lrank == 1) then
           dp1(:) = dp1(:) + dpf1(:)
        else
           dp2(:,:) = dp2(:,:) + dpf2(:,:)
