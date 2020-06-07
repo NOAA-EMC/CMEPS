@@ -75,7 +75,7 @@ contains
 
     ! atm and ocn fields required for atm/ocn flux calculation'
     allocate(flds(6))
-    flds = (/'Sa_u   ','Sa_v   ','Sa_z   ','Sa_tbot','Sa_pbot','Sa_shum'/)
+    flds = (/'Sa_u   ','Sa_v   ', 'Sa_z   ', 'Sa_tbot', 'Sa_pbot', 'Sa_shum'/)
     do n = 1,size(flds)
        fldname = trim(flds(n))
        call addfld(fldListFr(compatm)%flds, trim(fldname))
@@ -127,7 +127,11 @@ contains
        fldname = trim(flds(n))
        call addfld(fldListFr(compice)%flds, trim(fldname))
        call addfld(fldListTo(compatm)%flds, trim(fldname))
-       call addmap(fldListFr(compice)%flds, trim(fldname), compatm, mapnstod_consf, 'ifrac', 'unset')
+       if (trim(coupling_mode) == 'nems_orig' .or. trim(coupling_mode) == 'nems_orig_data') then
+          call addmap(fldListFr(compice)%flds, trim(fldname), compatm, mapnstod_consf, 'ifrac', 'unset')
+       else
+          call addmap(fldListFr(compice)%flds, trim(fldname), compatm, mapconsf, 'ifrac', 'unset')
+       end if
        call addmrg(fldListTo(compatm)%flds, trim(fldname), mrg_from1=compice, mrg_fld1=trim(fldname), mrg_type1='copy')
     end do
     deallocate(flds)
@@ -135,7 +139,11 @@ contains
     ! to atm: unmerged surface temperatures from ocn
     call addfld(fldListFr(compocn)%flds, 'So_t')
     call addfld(fldListTo(compatm)%flds, 'So_t')
-    call addmap(fldListFr(compocn)%flds, 'So_t', compatm, mapnstod_consf, 'ofrac', 'unset')
+    if (trim(coupling_mode) == 'nems_orig' .or. trim(coupling_mode) == 'nems_orig_data') then
+       call addmap(fldListFr(compocn)%flds, 'So_t', compatm, mapnstod_consf, 'ofrac', 'unset')
+    else
+       call addmap(fldListFr(compocn)%flds, 'So_t', compatm, mapconsf, 'ofrac', 'unset')
+    end if
     call addmrg(fldListTo(compatm)%flds, 'So_t', mrg_from1=compocn, mrg_fld1='So_t', mrg_type1='copy')
 
     !=====================================================================
@@ -296,11 +304,12 @@ contains
        if (trim(coupling_mode) == 'nems_orig' .or. trim(coupling_mode) == 'nems_orig_data') then
           call addmap(fldListFr(compatm)%flds, trim(fldname), compice, mapnstod_consf, 'none', 'unset')
        else
-          if (trim(fldname) == 'Sa_u' .or. trim(fldname) == 'Sa_v') then
-             call addmap(fldListFr(compatm)%flds, trim(fldname), compice, mappatch, 'none', 'unset')
-          else
-             call addmap(fldListFr(compatm)%flds, trim(fldname), compice, mapbilnr, 'none', 'unset')
-          end if
+          ! if (trim(fldname) == 'Sa_u' .or. trim(fldname) == 'Sa_v') then
+          !    call addmap(fldListFr(compatm)%flds, trim(fldname), compice, mappatch, 'none', 'unset')
+          ! else
+          !    call addmap(fldListFr(compatm)%flds, trim(fldname), compice, mapbilnr, 'none', 'unset')
+          ! end if
+          call addmap(fldListFr(compatm)%flds, trim(fldname), compice, mapconsf, 'none', 'unset')
        end if
        call addmrg(fldListTo(compice)%flds, trim(fldname), mrg_from1=compatm, mrg_fld1=trim(fldname), mrg_type1='copy')
     end do
