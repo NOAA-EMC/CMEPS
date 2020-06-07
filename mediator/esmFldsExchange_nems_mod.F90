@@ -304,11 +304,6 @@ contains
        if (trim(coupling_mode) == 'nems_orig' .or. trim(coupling_mode) == 'nems_orig_data') then
           call addmap(fldListFr(compatm)%flds, trim(fldname), compice, mapnstod_consf, 'none', 'unset')
        else
-          ! if (trim(fldname) == 'Sa_u' .or. trim(fldname) == 'Sa_v') then
-          !    call addmap(fldListFr(compatm)%flds, trim(fldname), compice, mappatch, 'none', 'unset')
-          ! else
-          !    call addmap(fldListFr(compatm)%flds, trim(fldname), compice, mapbilnr, 'none', 'unset')
-          ! end if
           call addmap(fldListFr(compatm)%flds, trim(fldname), compice, mapconsf, 'none', 'unset')
        end if
        call addmrg(fldListTo(compice)%flds, trim(fldname), mrg_from1=compatm, mrg_fld1=trim(fldname), mrg_type1='copy')

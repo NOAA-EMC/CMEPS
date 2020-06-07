@@ -160,6 +160,7 @@ contains
                FBMed1=is_local%wrap%FBMed_ocnalb_a, &
                FBMed2=is_local%wrap%FBMed_aoflux_a, rc=rc)
           if (ChkErr(rc,__LINE__,u_FILE_u)) return
+       !TODO: should be removed; nems_orig_data does not have prep_atm phase
        else if (trim(coupling_mode) == 'nems_orig_data') then
           call med_merge_auto(trim(compname(compatm)), &
                is_local%wrap%FBExp(compatm), is_local%wrap%FBFrac(compatm), &
