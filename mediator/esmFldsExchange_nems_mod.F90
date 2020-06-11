@@ -162,7 +162,7 @@ contains
     if (trim(coupling_mode) == 'nems_orig' .or. trim(coupling_mode) == 'nems_orig_data') then
        call addmap(fldListFr(compatm)%flds, 'Sa_pslv', compocn, mapnstod_consf, 'none', 'unset')
     else 
-       call addmap(fldListFr(compatm)%flds, 'Sa_pslv', compocn, mapbilnr, 'none', 'unset')
+       call addmap(fldListFr(compatm)%flds, 'Sa_pslv', compocn, mapconsf, 'none', 'unset')
     end if
     call addmrg(fldListTo(compocn)%flds, 'Sa_pslv', mrg_from1=compatm, mrg_fld1='Sa_pslv', mrg_type1='copy')
 
