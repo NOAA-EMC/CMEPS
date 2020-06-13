@@ -46,7 +46,7 @@ module esmflds
   ! Set coupling mode
   !-----------------------------------------------
 
-  character(len=10), public :: coupling_mode ! valid values are [cesm,nems_orig,nems_frac]
+  character(len=CS), public :: coupling_mode ! valid values are [cesm,nems_orig,nems_frac,nems_orig_data]
 
   !-----------------------------------------------
   ! PUblic methods

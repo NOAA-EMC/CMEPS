@@ -2,7 +2,7 @@ module med_fraction_mod
 
   !-----------------------------------------------------------------------------
   ! Mediator Component.
-  ! Sets fracations on all component grids
+  ! Sets fractions on all component grids
   !  the fractions fields are now afrac, ifrac, ofrac, lfrac, and lfrin.
   !    afrac = fraction of atm on a grid
   !    lfrac = fraction of lnd on a grid
@@ -753,7 +753,8 @@ contains
        ! -------------------------------------------
        if (is_local%wrap%comp_present(compatm)) then
 
-          if (trim(coupling_mode) == 'nems_orig') then
+          !if (trim(coupling_mode) == 'nems_orig') then
+          if (trim(coupling_mode) == 'nems_orig' .or. trim(coupling_mode) == 'nems_frac') then
 
              ! Map 'ifrac' from FBfrac(compice) to FBfrac(compatm)
              call FB_FieldRegrid(&
