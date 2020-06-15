@@ -137,7 +137,6 @@ contains
        !---------------------------------------
        ! Assumption here is that fluxes are computed on the ocean grid
 
-       !if (trim(coupling_mode) == 'cesm' .or. trim(coupling_mode) == 'nems_orig') then
        if (trim(coupling_mode) == 'cesm' ) then
           call med_map_FB_Regrid_Norm(&
                fldsSrc=fldListMed_aoflux%flds, &
@@ -161,13 +160,6 @@ contains
                FBMed1=is_local%wrap%FBMed_ocnalb_a, &
                FBMed2=is_local%wrap%FBMed_aoflux_a, rc=rc)
           if (ChkErr(rc,__LINE__,u_FILE_u)) return
-       !TODO: should be removed; nems_orig_data does not have prep_atm phase
-       !else if (trim(coupling_mode) == 'nems_orig_data') then
-       !   call med_merge_auto(trim(compname(compatm)), &
-       !        is_local%wrap%FBExp(compatm), is_local%wrap%FBFrac(compatm), &
-       !        is_local%wrap%FBImp(:,compatm), fldListTo(compatm), &
-       !        FBMed1=is_local%wrap%FBMed_aoflux_a, rc=rc)
-       !   if (ChkErr(rc,__LINE__,u_FILE_u)) return
        else if (trim(coupling_mode) == 'nems_frac' .or. trim(coupling_mode) == 'nems_orig') then
           call med_merge_auto(trim(compname(compatm)), &
                is_local%wrap%FBExp(compatm), is_local%wrap%FBFrac(compatm), &
