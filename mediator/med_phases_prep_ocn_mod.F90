@@ -551,7 +551,7 @@ contains
 
           call med_merge_field(is_local%wrap%FBExp(compocn),      'Faxa_sen',    &
                FBinA=is_local%wrap%FBMed_aoflux_o        , fnameA='Faox_sen ', wgtA=ocnwgt1, &
-               FBinC=is_local%wrap%FBImp(compatm,compocn), fnameB='Faxa_sen' , wgtB=wgtm01, rc=rc)
+               FBinB=is_local%wrap%FBImp(compatm,compocn), fnameB='Faxa_sen' , wgtB=wgtm01, rc=rc)
 
           call med_merge_field(is_local%wrap%FBExp(compocn),      'Foxx_taux',  &
                FBinA=is_local%wrap%FBMed_aoflux_o        , fnameA='Faox_taux ', wgtA=ocnwgt1, &
