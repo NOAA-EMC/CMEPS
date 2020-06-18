@@ -107,9 +107,11 @@ contains
     !=====================================================================
 
     ! to atm: fractions (computed in med_phases_prep_atm)
+    call addfld(fldListFr(compice)%flds, 'Si_ifrac')
     call addfld(fldListTo(compatm)%flds, 'Si_ifrac')
-    call addfld(fldListTo(compatm)%flds, 'So_ofrac')
-
+    call addmap(fldListFr(compice)%flds, 'Si_ifrac', compatm, mapnstod_consf, 'none', 'unset')
+    call addmrg(fldListTo(compatm)%flds, 'Si_ifrac', mrg_from1=compice, mrg_fld1='Si_ifrac', mrg_type1='copy')
+          
     ! to atm: unmerged from ice
     ! - zonal surface stress, meridional surface stress
     ! - surface latent heat flux, 
@@ -149,12 +151,6 @@ contains
     !=====================================================================
     ! FIELDS TO OCEAN (compocn)
     !=====================================================================
-
-    ! to ocn: fractional ice coverage wrt ocean from ice
-    call addfld(fldListFr(compice)%flds, 'Si_ifrac')
-    call addfld(fldListTo(compocn)%flds, 'Si_ifrac')
-    call addmap(fldListFr(compice)%flds, 'Si_ifrac', compocn,  mapfcopy, 'unset', 'unset')
-    call addmrg(fldListTo(compocn)%flds, 'Si_ifrac', mrg_from1=compice, mrg_fld1='Si_ifrac', mrg_type1='copy')
 
     ! to ocn: sea level pressure from atm
     call addfld(fldListTo(compocn)%flds, 'Sa_pslv')

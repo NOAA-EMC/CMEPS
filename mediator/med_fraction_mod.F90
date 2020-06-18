@@ -718,6 +718,7 @@ contains
 
        ! set ifrac = Si_ifrac * Si_imask
        ifrac(:) = Si_ifrac(:) * Si_imask(:)
+       !ifrac(:) = Si_ifrac(:)
 
        if (trim(coupling_mode) == 'nems_orig' .or. trim(coupling_mode) == 'nems_frac') then
           ofrac(:) = 1._r8 - ifrac(:)
