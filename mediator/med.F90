@@ -394,7 +394,7 @@ contains
 
     ! local variables
     type(ESMF_VM)     :: vm
-    character(len=CL) :: value
+    character(len=CL) :: cvalue
     integer           :: localPet
     logical           :: isPresent, isSet
     character(len=CX) :: msgString
@@ -429,14 +429,18 @@ contains
        logUnit = 6
     endif
 
-    call ESMF_AttributeGet(gcomp, name="Verbosity", value=value, defaultValue="max", &
+    call ESMF_AttributeGet(gcomp, name="Verbosity", value=cvalue, defaultValue="max", &
          convention="NUOPC", purpose="Instance", rc=rc)
     if (ChkErr(rc,__LINE__,u_FILE_u)) return
-    call ESMF_LogWrite(trim(subname)//": Mediator verbosity is "//trim(value), ESMF_LOGMSG_INFO)
+    call ESMF_LogWrite(trim(subname)//": Mediator verbosity is "//trim(cvalue), ESMF_LOGMSG_INFO)
 
-    write(msgString,'(A,i6)') trim(subname)//' dbug_flag = ',dbug_flag
+    call NUOPC_CompAttributeGet(gcomp, name='dbug_flag', value=cvalue, isPresent=isPresent, isSet=isSet, rc=rc)
+    if (ChkErr(rc,__LINE__,u_FILE_u)) return
+    if (isPresent .and. isSet) then
+     read(cvalue,*) dbug_flag
+    end if
+    write(msgString,'(A,i6)') trim(subname)//': Mediator dbug_flag is ',dbug_flag
     call ESMF_LogWrite(trim(msgString), ESMF_LOGMSG_INFO)
-    call ESMF_LogWrite(trim(subname)//": called", ESMF_LOGMSG_INFO)
 
     ! Switch to IPDv03 by filtering all other phaseMap entries
     call NUOPC_CompFilterPhaseMap(gcomp, ESMF_METHOD_INITIALIZE, acceptStringList=(/"IPDv03p"/), rc=rc)
