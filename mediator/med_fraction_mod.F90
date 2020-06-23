@@ -754,8 +754,7 @@ contains
        ! -------------------------------------------
        if (is_local%wrap%comp_present(compatm)) then
 
-          !if (trim(coupling_mode) == 'nems_orig') then
-          if (trim(coupling_mode) == 'nems_orig' .or. trim(coupling_mode) == 'nems_frac') then
+          if (trim(coupling_mode) == 'nems_orig') then
 
              ! Map 'ifrac' from FBfrac(compice) to FBfrac(compatm)
              call FB_FieldRegrid(&
@@ -778,6 +777,22 @@ contains
              where (ifrac .eq. 0.0_R8 .and. abs(ifrac_nstod) .gt.  0.0_R8)
                 ifrac = ifrac_nstod
              endwhere
+
+             ! Determine ofrac and lfrac on atm grid - set ofrac=1-ifrac and lfrac=0
+             call FB_getFldPtr(is_local%wrap%FBfrac(compatm), 'ofrac', ofrac, rc=rc)
+             if (ChkErr(rc,__LINE__,u_FILE_u)) return
+             call FB_getFldPtr(is_local%wrap%FBfrac(compatm), 'lfrac', lfrac, rc=rc)
+             if (ChkErr(rc,__LINE__,u_FILE_u)) return
+             ofrac(:) = 1.0_R8 - ifrac(:)
+             lfrac(:) = 0.0_R8
+
+          else if (trim(coupling_mode) == 'nems_frac') then
+
+             call FB_FieldRegrid(&
+                  is_local%wrap%FBfrac(compice), 'ifrac', &
+                  is_local%wrap%FBfrac(compatm), 'ifrac', &
+                  is_local%wrap%RH(compice,compatm,:),mapconsf, rc=rc)
+             if (ChkErr(rc,__LINE__,u_FILE_u)) return
 
              ! Determine ofrac and lfrac on atm grid - set ofrac=1-ifrac and lfrac=0
              call FB_getFldPtr(is_local%wrap%FBfrac(compatm), 'ofrac', ofrac, rc=rc)
