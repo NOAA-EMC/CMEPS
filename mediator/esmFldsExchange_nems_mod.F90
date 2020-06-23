@@ -41,7 +41,7 @@ contains
     integer          , intent(inout) :: rc
 
     ! local variables:
-    integer             :: i, n
+    integer             :: i, n, mapping_mode
     character(len=CL)   :: cvalue
     character(len=CS)   :: fldname
     character(len=CS), allocatable :: flds(:)
@@ -52,6 +52,13 @@ contains
 
     ! Initialize if use 3d cartesian mapping for u,v
     mapuv_with_cart3d = .false.
+
+    ! Set mapping_mode according to coupling_mode
+    if (trim(coupling_mode) == 'nems_orig' .or. trim(coupling_mode) == 'nems_orig_data') then
+      mapping_mode = mapnstod_consf
+    else
+      mapping_mode = mapconsf
+    end if
 
     !=====================================================================
     ! scalar information
@@ -109,7 +116,7 @@ contains
     ! to atm: fractions (computed in med_phases_prep_atm)
     call addfld(fldListFr(compice)%flds, 'Si_ifrac')
     call addfld(fldListTo(compatm)%flds, 'Si_ifrac')
-    call addmap(fldListFr(compice)%flds, 'Si_ifrac', compatm, mapnstod_consf, 'none', 'unset')
+    call addmap(fldListFr(compice)%flds, 'Si_ifrac', compatm, mapping_mode, 'none', 'unset')
     call addmrg(fldListTo(compatm)%flds, 'Si_ifrac', mrg_from1=compice, mrg_fld1='Si_ifrac', mrg_type1='copy')
           
     ! to atm: unmerged from ice
@@ -129,11 +136,7 @@ contains
        fldname = trim(flds(n))
        call addfld(fldListFr(compice)%flds, trim(fldname))
        call addfld(fldListTo(compatm)%flds, trim(fldname))
-       !if (trim(coupling_mode) == 'nems_orig' .or. trim(coupling_mode) == 'nems_orig_data') then
-          call addmap(fldListFr(compice)%flds, trim(fldname), compatm, mapnstod_consf, 'ifrac', 'unset')
-       !else
-       !   call addmap(fldListFr(compice)%flds, trim(fldname), compatm, mapconsf, 'ifrac', 'unset')
-       !end if
+       call addmap(fldListFr(compice)%flds, trim(fldname), compatm, mapping_mode, 'ifrac', 'unset')
        call addmrg(fldListTo(compatm)%flds, trim(fldname), mrg_from1=compice, mrg_fld1=trim(fldname), mrg_type1='copy')
     end do
     deallocate(flds)
@@ -141,11 +144,7 @@ contains
     ! to atm: unmerged surface temperatures from ocn
     call addfld(fldListFr(compocn)%flds, 'So_t')
     call addfld(fldListTo(compatm)%flds, 'So_t')
-   ! if (trim(coupling_mode) == 'nems_orig' .or. trim(coupling_mode) == 'nems_orig_data') then
-       call addmap(fldListFr(compocn)%flds, 'So_t', compatm, mapnstod_consf, 'ofrac', 'unset')
-    !else
-    !   call addmap(fldListFr(compocn)%flds, 'So_t', compatm, mapconsf, 'ofrac', 'unset')
-    !end if
+    call addmap(fldListFr(compocn)%flds, 'So_t', compatm, mapping_mode, 'ofrac', 'unset')
     call addmrg(fldListTo(compatm)%flds, 'So_t', mrg_from1=compocn, mrg_fld1='So_t', mrg_type1='copy')
 
     !=====================================================================
@@ -155,11 +154,7 @@ contains
     ! to ocn: sea level pressure from atm
     call addfld(fldListTo(compocn)%flds, 'Sa_pslv')
     call addfld(fldListFr(compatm)%flds, 'Sa_pslv')
-    !if (trim(coupling_mode) == 'nems_orig' .or. trim(coupling_mode) == 'nems_orig_data') then
-       call addmap(fldListFr(compatm)%flds, 'Sa_pslv', compocn, mapnstod_consf, 'none', 'unset')
-    !else 
-    !   call addmap(fldListFr(compatm)%flds, 'Sa_pslv', compocn, mapconsf, 'none', 'unset')
-    !end if
+    call addmap(fldListFr(compatm)%flds, 'Sa_pslv', compocn, mapping_mode, 'none', 'unset')
     call addmrg(fldListTo(compocn)%flds, 'Sa_pslv', mrg_from1=compatm, mrg_fld1='Sa_pslv', mrg_type1='copy')
 
     ! to ocn: from atm (custom merge in med_phases_prep_ocn)
@@ -178,52 +173,32 @@ contains
        fldname = trim(flds(n))
        call addfld(fldListTo(compocn)%flds, trim(fldname))
        call addfld(fldListFr(compatm)%flds, trim(fldname))
-       !if (trim(coupling_mode) == 'nems_orig' .or. trim(coupling_mode) == 'nems_orig_data') then
-          call addmap(fldListFr(compatm)%flds, trim(fldname), compocn, mapnstod_consf, 'none', 'unset')
-       !else
-       !   call addmap(fldListFr(compatm)%flds, trim(fldname), compocn, mapconsf, 'none', 'unset')
-       !end if
+       call addmap(fldListFr(compatm)%flds, trim(fldname), compocn, mapping_mode, 'none', 'unset')
     end do
     deallocate(flds)
 
     ! to ocn: merged sensible heat flux (custom merge in med_phases_prep_ocn)
     call addfld(fldListTo(compocn)%flds, 'Faxa_sen')
     call addfld(fldListFr(compatm)%flds, 'Faxa_sen')
-    !if (trim(coupling_mode) == 'nems_orig' .or. trim(coupling_mode) == 'nems_orig_data') then
-       call addmap(fldListFr(compatm)%flds, 'Faxa_sen', compocn, mapnstod_consf, 'none', 'unset')
-    !else
-    !   call addmap(fldListFr(compatm)%flds, 'Faxa_sen', compocn, mapconsf, 'none', 'unset')
-    !end if
+    call addmap(fldListFr(compatm)%flds, 'Faxa_sen', compocn, mapping_mode, 'none', 'unset')
 
     ! to ocn: surface latent heat flux and evaporation water flux (custom merge in med_phases_prep_ocn)
     call addfld(fldListTo(compocn)%flds, 'Faxa_evap')
     call addfld(fldListFr(compatm)%flds, 'Faxa_lat')
-    !if (trim(coupling_mode) == 'nems_orig' .or. trim(coupling_mode) == 'nems_orig_data') then
-       call addmap(fldListFr(compatm)%flds, 'Faxa_lat', compocn, mapnstod_consf, 'none', 'unset')
-    !else
-    !   call addmap(fldListFr(compatm)%flds, 'Faxa_lat', compocn, mapconsf, 'none', 'unset')
-    !end if
+    call addmap(fldListFr(compatm)%flds, 'Faxa_lat', compocn, mapping_mode, 'none', 'unset')
 
     ! to ocn: merge zonal surface stress (custom merge calculation in med_phases_prep_ocn)
     call addfld(fldListTo(compocn)%flds, 'Foxx_taux')
     call addfld(fldListFr(compice)%flds, 'Fioi_taux')
     call addfld(fldListFr(compatm)%flds, 'Faxa_taux')
-    !if (trim(coupling_mode) == 'nems_orig' .or. trim(coupling_mode) == 'nems_orig_data') then
-       call addmap(fldListFr(compatm)%flds, 'Faxa_taux', compocn, mapnstod_consf, 'none', 'unset')
-    !else
-    !   call addmap(fldListFr(compatm)%flds, 'Faxa_taux', compocn, mapconsf, 'none', 'unset')
-    !end if
+    call addmap(fldListFr(compatm)%flds, 'Faxa_taux', compocn, mapping_mode, 'none', 'unset')
     call addmap(fldListFr(compice)%flds, 'Fioi_taux', compocn, mapfcopy, 'unset', 'unset')
 
     ! to ocn: meridional surface stress (custom merge calculation in med_phases_prep_ocn)
     call addfld(fldListTo(compocn)%flds, 'Foxx_tauy')
     call addfld(fldListFr(compice)%flds, 'Fioi_tauy')
     call addfld(fldListFr(compatm)%flds, 'Faxa_tauy')
-    !if (trim(coupling_mode) == 'nems_orig' .or. trim(coupling_mode) == 'nems_orig_data') then
-       call addmap(fldListFr(compatm)%flds, 'Faxa_tauy', compocn, mapnstod_consf, 'none', 'unset')
-    !else
-    !   call addmap(fldListFr(compatm)%flds, 'Faxa_tauy', compocn, mapconsf, 'none', 'unset')
-    !end if
+    call addmap(fldListFr(compatm)%flds, 'Faxa_tauy', compocn, mapping_mode, 'none', 'unset')
     call addmap(fldListFr(compice)%flds, 'Fioi_tauy', compocn, mapfcopy, 'unset', 'unset')
 
     ! to ocn: net shortwave radiation from med (custom merge in med_phases_prep_ocn)
@@ -275,11 +250,7 @@ contains
        fldname = trim(flds(n))
        call addfld(fldListFr(compatm)%flds, trim(fldname))
        call addfld(fldListTo(compice)%flds, trim(fldname))
-       !if (trim(coupling_mode) == 'nems_orig' .or. trim(coupling_mode) == 'nems_orig_data') then
-          call addmap(fldListFr(compatm)%flds, trim(fldname), compice, mapnstod_consf, 'none', 'unset')
-       !else
-       !   call addmap(fldListFr(compatm)%flds, trim(fldname), compice, mapconsf, 'none', 'unset')
-       !end if
+       call addmap(fldListFr(compatm)%flds, trim(fldname), compice, mapping_mode, 'none', 'unset')
        call addmrg(fldListTo(compice)%flds, trim(fldname), mrg_from1=compatm, mrg_fld1=trim(fldname), mrg_type1='copy')
     end do
     deallocate(flds)
@@ -297,11 +268,7 @@ contains
        fldname = trim(flds(n))
        call addfld(fldListTo(compice)%flds, trim(fldname))
        call addfld(fldListFr(compatm)%flds, trim(fldname))
-       !if (trim(coupling_mode) == 'nems_orig' .or. trim(coupling_mode) == 'nems_orig_data') then
-          call addmap(fldListFr(compatm)%flds, trim(fldname), compice, mapnstod_consf, 'none', 'unset')
-       !else
-       !   call addmap(fldListFr(compatm)%flds, trim(fldname), compice, mapconsf, 'none', 'unset')
-       !end if
+       call addmap(fldListFr(compatm)%flds, trim(fldname), compice, mapping_mode, 'none', 'unset')
        call addmrg(fldListTo(compice)%flds, trim(fldname), mrg_from1=compatm, mrg_fld1=trim(fldname), mrg_type1='copy')
     end do
     deallocate(flds)
