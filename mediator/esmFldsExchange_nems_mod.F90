@@ -120,7 +120,7 @@ contains
     call addfld(fldListFr(compice)%flds, 'Si_ifrac')
     call addfld(fldListTo(compatm)%flds, 'Si_ifrac')
     call addfld(fldListTo(compatm)%flds, 'So_ofrac')
-          
+
     ! to atm: unmerged from ice
     ! - zonal surface stress, meridional surface stress
     ! - surface latent heat flux, 

@@ -360,7 +360,7 @@ contains
     end if
 
     !---------------------------------------
-    ! Set 'ifrac' in FBFrac(compice) and FBrac(compatm)
+    ! Set 'ifrac' in FBFrac(compice) and FBFrac(compatm)
     !---------------------------------------
 
     if (is_local%wrap%comp_present(compice)) then
