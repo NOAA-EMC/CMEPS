@@ -178,34 +178,34 @@ contains
        !--- custom calculations
        !---------------------------------------
 
-       ! ! set fractions to send back to atm
-       ! if (FB_FldChk(is_local%wrap%FBExp(compatm), 'So_ofrac', rc=rc)) then
-       !    call FB_GetFldPtr(is_local%wrap%FBExp(compatm), 'So_ofrac', dataptr1, rc=rc)
-       !    if (ChkErr(rc,__LINE__,u_FILE_u)) return
-       !    call FB_GetFldPtr(is_local%wrap%FBFrac(compatm), 'ofrac', dataptr2, rc=rc)
-       !    if (ChkErr(rc,__LINE__,u_FILE_u)) return
-       !    do n = 1,size(dataptr1)
-       !       dataptr1(n) = dataptr2(n)
-       !    end do
-       ! end if
-       ! if (FB_FldChk(is_local%wrap%FBExp(compatm), 'Si_ifrac', rc=rc)) then
-       !    call FB_GetFldPtr(is_local%wrap%FBExp(compatm), 'Si_ifrac', dataptr1, rc=rc)
-       !    if (ChkErr(rc,__LINE__,u_FILE_u)) return
-       !    call FB_GetFldPtr(is_local%wrap%FBFrac(compatm), 'ifrac', dataptr2, rc=rc)
-       !    if (ChkErr(rc,__LINE__,u_FILE_u)) return
-       !    do n = 1,size(dataptr1)
-       !       dataptr1(n) = dataptr2(n)
-       !    end do
-       ! end if
-       ! if (FB_FldChk(is_local%wrap%FBExp(compatm), 'Sl_lfrac', rc=rc)) then
-       !    call FB_GetFldPtr(is_local%wrap%FBExp(compatm), 'Sl_lfrac', dataptr1, rc=rc)
-       !    if (ChkErr(rc,__LINE__,u_FILE_u)) return
-       !    call FB_GetFldPtr(is_local%wrap%FBFrac(compatm), 'lfrac', dataptr2, rc=rc)
-       !    if (ChkErr(rc,__LINE__,u_FILE_u)) return
-       !    do n = 1,size(dataptr1)
-       !       dataptr1(n) = dataptr2(n)
-       !    end do
-       ! end if
+       ! set fractions to send back to atm
+       if (FB_FldChk(is_local%wrap%FBExp(compatm), 'So_ofrac', rc=rc)) then
+          call FB_GetFldPtr(is_local%wrap%FBExp(compatm), 'So_ofrac', dataptr1, rc=rc)
+          if (ChkErr(rc,__LINE__,u_FILE_u)) return
+          call FB_GetFldPtr(is_local%wrap%FBFrac(compatm), 'ofrac', dataptr2, rc=rc)
+          if (ChkErr(rc,__LINE__,u_FILE_u)) return
+          do n = 1,size(dataptr1)
+             dataptr1(n) = dataptr2(n)
+          end do
+       end if
+       if (FB_FldChk(is_local%wrap%FBExp(compatm), 'Si_ifrac', rc=rc)) then
+          call FB_GetFldPtr(is_local%wrap%FBExp(compatm), 'Si_ifrac', dataptr1, rc=rc)
+          if (ChkErr(rc,__LINE__,u_FILE_u)) return
+          call FB_GetFldPtr(is_local%wrap%FBFrac(compatm), 'ifrac', dataptr2, rc=rc)
+          if (ChkErr(rc,__LINE__,u_FILE_u)) return
+          do n = 1,size(dataptr1)
+             dataptr1(n) = dataptr2(n)
+          end do
+       end if
+       if (FB_FldChk(is_local%wrap%FBExp(compatm), 'Sl_lfrac', rc=rc)) then
+          call FB_GetFldPtr(is_local%wrap%FBExp(compatm), 'Sl_lfrac', dataptr1, rc=rc)
+          if (ChkErr(rc,__LINE__,u_FILE_u)) return
+          call FB_GetFldPtr(is_local%wrap%FBFrac(compatm), 'lfrac', dataptr2, rc=rc)
+          if (ChkErr(rc,__LINE__,u_FILE_u)) return
+          do n = 1,size(dataptr1)
+             dataptr1(n) = dataptr2(n)
+          end do
+       end if
 
        !---------------------------------------
        !--- update local scalar data

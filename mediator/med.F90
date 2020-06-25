@@ -1823,7 +1823,6 @@ contains
 
       call NUOPC_CompAttributeSet(gcomp, name="InitializeDataComplete", value="false", rc=rc)
       if (ChkErr(rc,__LINE__,u_FILE_u)) return
-      return
 
     endif  ! end first_call if-block
 
@@ -1861,7 +1860,7 @@ contains
              ! If any atm import fields are not time stamped correctly, then dependency is not satisified - must return to atm
              call ESMF_LogWrite("MED - Initialize-Data-Dependency from ATM NOT YET SATISFIED!!!", ESMF_LOGMSG_INFO, rc=rc)
              if (ChkErr(rc,__LINE__,u_FILE_u)) return
-             atmdone = .false.
+             allDone = .false.
              exit  ! break out of the loop when first not satisfied found
           endif
        enddo

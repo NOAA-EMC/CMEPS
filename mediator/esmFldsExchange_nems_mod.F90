@@ -119,8 +119,7 @@ contains
     ! to atm: fractions (computed in med_phases_prep_atm)
     call addfld(fldListFr(compice)%flds, 'Si_ifrac')
     call addfld(fldListTo(compatm)%flds, 'Si_ifrac')
-    call addmap(fldListFr(compice)%flds, 'Si_ifrac', compatm, maptype, 'none', 'unset')
-    call addmrg(fldListTo(compatm)%flds, 'Si_ifrac', mrg_from1=compice, mrg_fld1='Si_ifrac', mrg_type1='copy')
+    call addfld(fldListTo(compatm)%flds, 'So_ofrac')
           
     ! to atm: unmerged from ice
     ! - zonal surface stress, meridional surface stress
