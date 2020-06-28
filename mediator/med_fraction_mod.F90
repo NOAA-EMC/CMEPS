@@ -141,24 +141,7 @@ module med_fraction_mod
   character(len=5),parameter,dimension(2) :: fraclist_r = (/'rfrac','lfrac'/)
   character(len=5),parameter,dimension(1) :: fraclist_w = (/'wfrac'/)
 
-  !--- standard ---
-  real(R8),parameter :: eps_fracsum = 1.0e-02      ! allowed error in sum of fracs
-  real(R8),parameter :: eps_fracval = 1.0e-02      ! allowed error in any frac +- 0,1
-  real(R8),parameter :: eps_fraclim = 1.0e-03      ! truncation limit in fractions_a(lfrac)
-  logical ,parameter :: atm_frac_correct = .false. ! turn on frac correction on atm grid
-
-  !--- standard plus atm fraction consistency ---
-  !  real(R8),parameter :: eps_fracsum = 1.0e-12   ! allowed error in sum of fracs
-  !  real(R8),parameter :: eps_fracval = 1.0e-02   ! allowed error in any frac +- 0,1
-  !  real(R8),parameter :: eps_fraclim = 1.0e-03   ! truncation limit in fractions_a(lfrac)
-  !  logical ,parameter :: atm_frac_correct = .true. ! turn on frac correction on atm grid
-
-  !--- unconstrained and area conserving? ---
-  !  real(R8),parameter :: eps_fracsum = 1.0e-12   ! allowed error in sum of fracs
-  !  real(R8),parameter :: eps_fracval = 1.0e-02   ! allowed error in any frac +- 0,1
-  !  real(R8),parameter :: eps_fraclim = 1.0e-20   ! truncation limit in fractions_a(lfrac)
-  !  logical ,parameter :: atm_frac_correct = .true. ! turn on frac correction on atm grid
-
+  real(R8)    , parameter :: eps_fraclim = 1.0e-03      ! truncation limit in fractions_a(lfrac)
   character(*), parameter :: u_FILE_u =  &
        __FILE__
 
@@ -443,17 +426,11 @@ contains
 
           if (.not. is_local%wrap%comp_present(complnd)) then
              lfrac(:) = 0.0_R8
-             if (atm_frac_correct) then
-                ofrac(:) = 1.0_R8
-             end if
           else
              do n = 1,size(lfrac)
                 lfrac(n) = 1.0_R8 - ofrac(n)
                 if (abs(lfrac(n)) < eps_fraclim) then
                    lfrac(n) = 0.0_R8
-                   if (atm_frac_correct) then
-                      ofrac(n) = 1.0_R8
-                   end if
                 end if
              end do
           end if
@@ -469,9 +446,6 @@ contains
              ofrac(n) = 1.0_R8 - lfrac(n)
              if (abs(ofrac(n)) < eps_fraclim) then
                 ofrac(n) = 0.0_R8
-                if (atm_frac_correct) then
-                   lfrac(n) = 1.0_R8
-                endif
              end if
           end do
 
@@ -718,8 +692,7 @@ contains
        ! set ifrac = Si_ifrac * Si_imask
        ifrac(:) = Si_ifrac(:) * Si_imask(:)
 
-       !if (trim(coupling_mode) == 'nems_orig' .or. trim(coupling_mode) == 'nems_frac') then
-       if (trim(coupling_mode) == 'nems_orig' ) then
+       if (trim(coupling_mode) == 'nems_orig' .or. trim(coupling_mode) == 'nems_orig_data' ) then
           ofrac(:) = 1._r8 - ifrac(:)
        else
           ! set ofrac = Si_imask - ifrac
@@ -768,13 +741,11 @@ contains
                  is_local%wrap%RH(compice,compatm,:),maptype, rc=rc)
             if (ChkErr(rc,__LINE__,u_FILE_u)) return
 
-            ! Determine ofrac and lfrac on atm grid - set ofrac=1-ifrac and lfrac=0
-            call FB_getFldPtr(is_local%wrap%FBfrac(compatm), 'ofrac', ofrac, rc=rc)
+            call FB_FieldRegrid(&
+                 is_local%wrap%FBfrac(compice), 'ofrac', &
+                 is_local%wrap%FBfrac(compatm), 'ofrac', &
+                 is_local%wrap%RH(compice,compatm,:),maptype, rc=rc)
             if (ChkErr(rc,__LINE__,u_FILE_u)) return
-            call FB_getFldPtr(is_local%wrap%FBfrac(compatm), 'lfrac', lfrac, rc=rc)
-            if (ChkErr(rc,__LINE__,u_FILE_u)) return
-            ofrac(:) = 1.0_R8 - ifrac(:)
-            lfrac(:) = 0.0_R8
 
           else
 
@@ -803,29 +774,6 @@ contains
                      is_local%wrap%RH(compice,compatm,:),maptype, rc=rc)
                 if (ChkErr(rc,__LINE__,u_FILE_u)) return
              end if
-
-             ! Note: 'lfrac' from FBFrac(compatm) is just going to be in the init
-             if ( is_local%wrap%med_coupling_active(compice,compatm) .and. &
-                  is_local%wrap%med_coupling_active(compocn,compatm) ) then
-
-                if (atm_frac_correct) then
-                   call FB_getFldPtr(is_local%wrap%FBfrac(compatm), 'ifrac', ifrac, rc=rc)
-                   if (ChkErr(rc,__LINE__,u_FILE_u)) return
-
-                   call FB_getFldPtr(is_local%wrap%FBfrac(compatm), 'ofrac', ofrac, rc=rc)
-                   if (ChkErr(rc,__LINE__,u_FILE_u)) return
-
-                   call FB_getFldPtr(is_local%wrap%FBfrac(compatm), 'lfrac', lfrac, rc=rc)
-                   if (ChkErr(rc,__LINE__,u_FILE_u)) return
-                   where (ifrac + ofrac > 0.0_R8)
-                      ifrac = ifrac * ((1.0_R8 - lfrac)/(ofrac+ifrac))
-                      ofrac = ofrac * ((1.0_R8 - lfrac)/(ofrac+ifrac))
-                   elsewhere
-                      ifrac = 0.0_R8
-                      ofrac = 0.0_R8
-                   end where
-                endif
-             endif
 
           end if
        end if

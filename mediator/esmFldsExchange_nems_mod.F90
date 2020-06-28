@@ -83,26 +83,28 @@ contains
     call addfld(fldListFr(compocn)%flds, 'So_omask')
     call addmap(fldListFr(compocn)%flds, 'So_omask', compice,  mapfcopy, 'unset', 'unset')
 
-    ! atm and ocn fields required for atm/ocn flux calculation'
-    allocate(flds(6))
-    flds = (/'Sa_u   ','Sa_v   ', 'Sa_z   ', 'Sa_tbot', 'Sa_pbot', 'Sa_shum'/)
-    do n = 1,size(flds)
-       fldname = trim(flds(n))
-       call addfld(fldListFr(compatm)%flds, trim(fldname))
-       call addmap(fldListFr(compatm)%flds, trim(fldname), compocn, maptype, 'none', 'unset')
-    end do
-    deallocate(flds)
+    if ( trim(coupling_mode) == 'nems_orig_data') then
+      ! atm and ocn fields required for atm/ocn flux calculation'
+      allocate(flds(6))
+      flds = (/'Sa_u   ','Sa_v   ', 'Sa_z   ', 'Sa_tbot', 'Sa_pbot', 'Sa_shum'/)
+      do n = 1,size(flds)
+         fldname = trim(flds(n))
+         call addfld(fldListFr(compatm)%flds, trim(fldname))
+         call addmap(fldListFr(compatm)%flds, trim(fldname), compocn, maptype, 'none', 'unset')
+      end do
+      deallocate(flds)
 
-    ! unused fields needed by the atm/ocn flux computation
-    allocate(flds(13))
-    flds = (/'So_tref  ', 'So_qref  ','So_u10   ', 'So_ustar ','So_ssq   ', &
-             'So_re    ', 'So_duu10n','Faox_lwup', 'Faox_sen ','Faox_lat ', &
-             'Faox_evap', 'Faox_taux','Faox_tauy'/)
-    do n = 1,size(flds)
-       fldname = trim(flds(n))
-       call addfld(fldListMed_aoflux%flds, trim(fldname))
-    end do
-    deallocate(flds)
+      ! unused fields needed by the atm/ocn flux computation
+      allocate(flds(13))
+      flds = (/'So_tref  ', 'So_qref  ','So_u10   ', 'So_ustar ','So_ssq   ', &
+               'So_re    ', 'So_duu10n','Faox_lwup', 'Faox_sen ','Faox_lat ', &
+               'Faox_evap', 'Faox_taux','Faox_tauy'/)
+      do n = 1,size(flds)
+         fldname = trim(flds(n))
+         call addfld(fldListMed_aoflux%flds, trim(fldname))
+      end do
+      deallocate(flds)
+    end if
 
     ! unused fields from ice - but that are needed to be realized by the cice cap
     call addfld(fldListFr(compice)%flds, 'Si_avsdf')
@@ -119,7 +121,6 @@ contains
     ! to atm: fractions (computed in med_phases_prep_atm)
     call addfld(fldListFr(compice)%flds, 'Si_ifrac')
     call addfld(fldListTo(compatm)%flds, 'Si_ifrac')
-    call addfld(fldListTo(compatm)%flds, 'So_ofrac')
 
     ! to atm: unmerged from ice
     ! - zonal surface stress, meridional surface stress
