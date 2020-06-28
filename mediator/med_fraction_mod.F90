@@ -622,6 +622,7 @@ contains
     integer                    :: dbrc
     integer                    :: maptype
     character(len=*),parameter :: subname='(med_fraction_set)'
+
     !---------------------------------------
     call t_startf('MED:'//subname)
 
@@ -681,7 +682,7 @@ contains
 
        call FB_getFldPtr(is_local%wrap%FBImp(compice,compice) , 'Si_ifrac', Si_ifrac, rc=rc)
        if (ChkErr(rc,__LINE__,u_FILE_u)) return
-       call FB_getFldPtr(is_local%wrap%FBImp(compice,compice) , 'Si_imask' , Si_imask, rc=rc)
+       call FB_getFldPtr(is_local%wrap%FBImp(compice,compice) , 'Si_imask', Si_imask, rc=rc)
        if (ChkErr(rc,__LINE__,u_FILE_u)) return
 
        call FB_getFldPtr(is_local%wrap%FBfrac(compice), 'ifrac', ifrac, rc=rc)
@@ -692,12 +693,8 @@ contains
        ! set ifrac = Si_ifrac * Si_imask
        ifrac(:) = Si_ifrac(:) * Si_imask(:)
 
-       if (trim(coupling_mode) == 'nems_orig' .or. trim(coupling_mode) == 'nems_orig_data' ) then
-          ofrac(:) = 1.0_R8 - ifrac(:)
-       else
-          ! set ofrac = Si_imask - ifrac
-          ofrac(:) = Si_imask(:) - ifrac(:)
-       end if
+       ! set ofrac = Si_imask - ifrac
+       ofrac(:) = Si_imask(:) - ifrac(:)
 
        ! -------------------------------------------
        ! Set FBfrac(compocn)

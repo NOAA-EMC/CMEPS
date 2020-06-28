@@ -1819,24 +1819,24 @@ contains
       call med_map_MapNorm_init(gcomp, logunit, rc)
       if (ChkErr(rc,__LINE__,u_FILE_u)) return
 
-      !----------------------------------------------------------
-      ! Create FBfrac field bundles and initialize fractions
-      ! This has some complex dependencies on fractions from import States
-      ! and appropriate checks are not implemented. We might need to split
-      ! out the fraction FB allocation and the fraction initialization
-      !----------------------------------------------------------
-
-      call med_fraction_init(gcomp,rc=rc)
-      if (ChkErr(rc,__LINE__,u_FILE_u)) return
-      call med_fraction_set(gcomp,rc=rc)
-      if (ChkErr(rc,__LINE__,u_FILE_u)) return
-
       first_call = .false.
 
       call NUOPC_CompAttributeSet(gcomp, name="InitializeDataComplete", value="false", rc=rc)
       if (ChkErr(rc,__LINE__,u_FILE_u)) return
 
     endif  ! end first_call if-block
+
+    !----------------------------------------------------------
+    ! Create FBfrac field bundles and initialize fractions
+    ! This has some complex dependencies on fractions from import States
+    ! and appropriate checks are not implemented. We might need to split
+    ! out the fraction FB allocation and the fraction initialization
+    !----------------------------------------------------------
+
+    call med_fraction_init(gcomp,rc=rc)
+    if (ChkErr(rc,__LINE__,u_FILE_u)) return
+    call med_fraction_set(gcomp,rc=rc)
+    if (ChkErr(rc,__LINE__,u_FILE_u)) return
 
     !---------------------------------------
     ! Carry out data dependency for initialization for NEMS
