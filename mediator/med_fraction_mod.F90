@@ -693,7 +693,7 @@ contains
        ifrac(:) = Si_ifrac(:) * Si_imask(:)
 
        if (trim(coupling_mode) == 'nems_orig' .or. trim(coupling_mode) == 'nems_orig_data' ) then
-          ofrac(:) = 1._r8 - ifrac(:)
+          ofrac(:) = 1.0_R8 - ifrac(:)
        else
           ! set ofrac = Si_imask - ifrac
           ofrac(:) = Si_imask(:) - ifrac(:)
