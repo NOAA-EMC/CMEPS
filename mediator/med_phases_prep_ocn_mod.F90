@@ -757,10 +757,10 @@ contains
     do n = 1,lsize
        if (ifrac(n) <= 0._R8) then
           ! ice fraction is 0
-          ocnwgt1(n) =  0.0_R8
+          ocnwgt1(n) =  1.0_R8
           icewgt1(n) =  0.0_R8
-          wgtp01(n)  =  1.0_R8
-          wgtm01(n)  = -1.0_R8
+          wgtp01(n)  =  0.0_R8
+          wgtm01(n)  =  0.0_R8
        else
           ! ice fraction is > 0
           ocnwgt1(n) = ofrac(n)
