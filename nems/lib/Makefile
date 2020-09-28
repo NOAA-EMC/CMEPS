@@ -36,7 +36,7 @@ endif
 
 .PHONY: install build clean
 
-install: build
+install: clean
 
 build: $(PIO_BUILD_DIR)/Makefile
 	cd $(PIO_BUILD_DIR); \

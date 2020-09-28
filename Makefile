@@ -22,7 +22,7 @@ endif
 MEDIATOR_DIR := $(BASE_DIR)/mediator
 LIBRARY_MEDIATOR := $(MEDIATOR_DIR)/libcmeps.a
 LIBRARY_UTIL := $(BASE_DIR)/nems/util/libcmeps_util.a
-PIO_INSTALL_DIR := $(BASE_DIR)/nems/lib/ParallelIO/install
+PIO_INSTALL_DIR := $(PIO_ROOT)
 PIO_INSTALL_LIBS := $(PIO_INSTALL_DIR)/lib/libpiof.a
 PIO_INCLUDE_DIR := $(PIO_INSTALL_DIR)/include
 
