@@ -103,22 +103,22 @@ contains
     !--- input arguments --------------------------------
     integer(IN),intent(in) ::       nMax  ! data vector length
     integer(IN),intent(in) :: mask (nMax) ! ocn domain mask       0 <=> out of domain
-    real(R8)   ,intent(in) :: zbot (nMax) ! atm level height      (m)
-    real(R8)   ,intent(in) :: ubot (nMax) ! atm u wind            (m/s)
-    real(R8)   ,intent(in) :: vbot (nMax) ! atm v wind            (m/s)
-    real(R8)   ,intent(in) :: thbot(nMax) ! atm potential T       (K)
-    real(R8)   ,intent(in) :: qbot (nMax) ! atm specific humidity (kg/kg)
-    real(R8)   ,intent(in) :: s16O (nMax) ! atm H216O tracer conc. (kg/kg)
-    real(R8)   ,intent(in) :: sHDO (nMax) ! atm HDO tracer conc.  (kg/kg)
-    real(R8)   ,intent(in) :: s18O (nMax) ! atm H218O tracer conc. (kg/kg)
+    real(R8)   ,intent(in) :: zbot (nMax) ! atm level height                     (m)
+    real(R8)   ,intent(in) :: ubot (nMax) ! atm u wind (bottom or 10m)           (m/s)
+    real(R8)   ,intent(in) :: vbot (nMax) ! atm v wind (bottom or 10m)           (m/s)
+    real(R8)   ,intent(in) :: thbot(nMax) ! atm potential T                      (K)
+    real(R8)   ,intent(in) :: qbot (nMax) ! atm specific humidity (bottom or 2m) (kg/kg)
+    real(R8)   ,intent(in) :: s16O (nMax) ! atm H216O tracer conc.               (kg/kg)
+    real(R8)   ,intent(in) :: sHDO (nMax) ! atm HDO tracer conc.                 (kg/kg)
+    real(R8)   ,intent(in) :: s18O (nMax) ! atm H218O tracer conc.               (kg/kg)
     real(R8)   ,intent(in) :: r16O (nMax) ! ocn H216O tracer ratio/Rstd
     real(R8)   ,intent(in) :: rHDO (nMax) ! ocn HDO tracer ratio/Rstd
     real(R8)   ,intent(in) :: r18O (nMax) ! ocn H218O tracer ratio/Rstd
-    real(R8)   ,intent(in) :: rbot (nMax) ! atm air density       (kg/m^3)
-    real(R8)   ,intent(in) :: tbot (nMax) ! atm T                 (K)
-    real(R8)   ,intent(in) :: us   (nMax) ! ocn u-velocity        (m/s)
-    real(R8)   ,intent(in) :: vs   (nMax) ! ocn v-velocity        (m/s)
-    real(R8)   ,intent(in) :: ts   (nMax) ! ocn temperature       (K)
+    real(R8)   ,intent(in) :: rbot (nMax) ! atm air density                      (kg/m^3)
+    real(R8)   ,intent(in) :: tbot (nMax) ! atm T (bottom or 2m)                 (K)
+    real(R8)   ,intent(in) :: us   (nMax) ! ocn u-velocity                       (m/s)
+    real(R8)   ,intent(in) :: vs   (nMax) ! ocn v-velocity                       (m/s)
+    real(R8)   ,intent(in) :: ts   (nMax) ! ocn temperature                      (K)
     integer(IN),intent(in), optional :: ocn_surface_flux_scheme
     real(R8)   ,intent(in), optional :: seq_flux_atmocn_minwind ! minimum wind speed for atmocn (m/s)
 
