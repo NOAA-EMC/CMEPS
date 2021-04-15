@@ -782,7 +782,6 @@ contains
                       //', destcomp '//trim(compname(destcomp)) &
                       //',  mapnorm '//trim(mapnorm_mapindex) &
                       //'  '//trim(fieldnamelist(nf))
-                   if (mastertask) write(logunit,*)trim(tmpstr)
                    call ESMF_LogWrite(trim(tmpstr), ESMF_LOGMSG_INFO)
                 else
                    if (mapnorm_mapindex /= packed_data(mapindex)%mapnorm) then
@@ -791,7 +790,6 @@ contains
                         //',  mapnorm '//trim(mapnorm_mapindex) &
                         //' set; cannot set mapnorm to '//trim(packed_data(mapindex)%mapnorm) &
                         //'  '//trim(fieldnamelist(nf))
-                     if (mastertask) write(logunit,*)trim(tmpstr)
                      call ESMF_LogWrite(trim(tmpstr), ESMF_LOGMSG_INFO)
                      call ESMF_Finalize(endflag=ESMF_END_ABORT)
                    end if
