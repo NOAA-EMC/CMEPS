@@ -735,7 +735,6 @@ contains
     character(len=CL) :: cvalue
     logical           :: init_mrgstr
     character(len=*),parameter :: subname = '(med_fldList_Document_Mapping)'
-
     !-----------------------------------------------------------
 
     !---------------------------------------
