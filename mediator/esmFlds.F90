@@ -721,7 +721,6 @@ contains
     ! local variables
     integer           :: nsrc,ndst,nf,nm,n
     integer           :: mapindex
-    integer           :: fieldCount
     character(len=CS) :: mapnorm
     character(len=CL) :: mapfile
     character(len=CS) :: fldname
@@ -777,8 +776,7 @@ contains
     ! ocn-> atm mappings for atm/ocn fluxes computed in mediator on the ocn grid
     nsrc = compocn
     ndst = compatm
-    fieldCount = med_fldList_GetNumFlds(fldListMed_aoflux)
-    if (med_coupling_active(nsrc,ndst) .and. fieldCount > 0) then
+    if (med_coupling_active(nsrc,ndst) .and. associated(fldListMed_aoflux%flds)) then
        do n = 1,size(fldListMed_aoflux%flds)
           mapindex = fldlistMed_aoflux%flds(n)%mapindex(ndst)
           if ( mapindex /= mapunset) then
