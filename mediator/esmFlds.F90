@@ -1,6 +1,7 @@
 module esmflds
 
-  use med_kind_mod, only : CX=>SHR_KIND_CX, CS=>SHR_KIND_CS, CL=>SHR_KIND_CL, R8=>SHR_KIND_R8
+  use med_kind_mod, only  : CX=>SHR_KIND_CX, CS=>SHR_KIND_CS, CL=>SHR_KIND_CL, R8=>SHR_KIND_R8
+  use med_utils_mod, only : ChkErr             => med_utils_ChkErr
 
   implicit none
   private
@@ -718,6 +719,7 @@ contains
     ! local variables
     integer           :: nsrc,ndst,nf,nm,n
     integer           :: mapindex
+    integer           :: fieldCount
     character(len=CS) :: mapnorm
     character(len=CL) :: mapfile
     character(len=CS) :: fldname
@@ -731,6 +733,7 @@ contains
     character(len=CL) :: cvalue
     logical           :: init_mrgstr
     character(len=*),parameter :: subname = '(med_fldList_Document_Mapping)'
+
     !-----------------------------------------------------------
 
     !---------------------------------------
@@ -773,7 +776,8 @@ contains
     ! ocn-> atm mappings for atm/ocn fluxes computed in mediator on the ocn grid
     nsrc = compocn
     ndst = compatm
-    if (med_coupling_active(nsrc,ndst)) then
+    fieldCount = med_fldList_GetNumFlds(fldListMed_aoflux)
+    if (med_coupling_active(nsrc,ndst) .and. fieldCount > 0) then
        do n = 1,size(fldListMed_aoflux%flds)
           mapindex = fldlistMed_aoflux%flds(n)%mapindex(ndst)
           if ( mapindex /= mapunset) then
