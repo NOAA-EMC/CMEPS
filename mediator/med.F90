@@ -1758,6 +1758,7 @@ contains
     type(ESMF_Field)                   :: field
     type(ESMF_StateItem_Flag)          :: itemType
     logical                            :: atCorrectTime, connected
+    logical                            :: isPresent, isSet
     integer                            :: n1,n2,n,ns
     integer                            :: nsrc,ndst
     integer                            :: cntn1, cntn2
