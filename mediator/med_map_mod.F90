@@ -410,11 +410,9 @@ contains
     call ESMF_LogWrite(trim(string), ESMF_LOGMSG_INFO)
 
     polemethod=ESMF_POLEMETHOD_ALLAVG
-    if (trim(coupling_mode) == 'cesm') then
-      if (n1 == compwav .or. n2 == compwav) then
-        polemethod = ESMF_POLEMETHOD_NONE ! todo: remove this when ESMF tripolar mapping fix is in place.
-      endif
-    end if
+    if (n1 == compwav .or. n2 == compwav) then
+      polemethod = ESMF_POLEMETHOD_NONE ! todo: remove this when ESMF tripolar mapping fix is in place.
+    endif
 
     ! Create route handle
     if (mapindex == mapfcopy) then
