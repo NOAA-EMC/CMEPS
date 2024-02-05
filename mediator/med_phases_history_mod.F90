@@ -672,7 +672,7 @@ contains
     integer             :: hist_n       ! freq_n setting relative to freq_option
     character(CL)       :: hist_option_in
     character(CL)       :: hist_n_in
-    integer             :: hist_tilesize
+    integer             :: hist_tilesize(3) ! number of tiles, tile xdim, tile ydim
     logical             :: isPresent
     logical             :: isSet
     type(ESMF_VM)       :: vm
@@ -700,7 +700,7 @@ contains
     if (isPresent .and. isSet) then
        call NUOPC_CompAttributeGet(gcomp, name='history_tile_'//trim(compname(compid)), value=cvalue, rc=rc)
        if (ChkErr(rc,__LINE__,u_FILE_u)) return
-       read(cvalue,*) hist_tilesize
+       read(cvalue,*) hist_tilesize(1:3)
     else
        hist_tilesize = 0
     end if
@@ -830,7 +830,7 @@ contains
     integer                 :: hist_n        ! freq_n setting relative to freq_option
     character(CL)           :: hist_option_in
     character(CL)           :: hist_n_in
-    integer                 :: hist_tilesize
+    integer                 :: hist_tilesize(3) ! number of tiles, tile xdim, tile ydim
     logical                 :: isPresent
     logical                 :: isSet
     type(ESMF_VM)           :: vm
@@ -860,7 +860,7 @@ contains
     if (isPresent .and. isSet) then
        call NUOPC_CompAttributeGet(gcomp, name='history_tile_'//trim(compname(compid)), value=cvalue, rc=rc)
        if (ChkErr(rc,__LINE__,u_FILE_u)) return
-       read(cvalue,*) hist_tilesize
+       read(cvalue,*) hist_tilesize(1:3)
     else
        hist_tilesize = 0
     end if

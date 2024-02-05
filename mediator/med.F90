@@ -510,7 +510,7 @@ contains
 
 #ifdef CDEPS_INLINE
     !------------------
-    ! phase routine for cdeps inline capabilty 
+    ! phase routine for cdeps inline capabilty
     !------------------
 
     call NUOPC_CompSetEntryPoint(gcomp, ESMF_METHOD_RUN, &
@@ -832,10 +832,10 @@ contains
     if (trim(coupling_mode) == 'cesm') then
        call esmFldsExchange_cesm(gcomp, phase='advertise', rc=rc)
        if (ChkErr(rc,__LINE__,u_FILE_u)) return
-    else if (trim(coupling_mode(1:3)) == 'ufs') then
+    else if (coupling_mode(1:3) == 'ufs') then
        call esmFldsExchange_ufs(gcomp, phase='advertise', rc=rc)
        if (ChkErr(rc,__LINE__,u_FILE_u)) return
-    else if (trim(coupling_mode(1:4)) == 'hafs') then
+    else if (coupling_mode(1:4) == 'hafs') then
        call esmFldsExchange_hafs(gcomp, phase='advertise', rc=rc)
        if (ChkErr(rc,__LINE__,u_FILE_u)) return
     else
@@ -962,7 +962,7 @@ contains
           endif
           if (maintask) then
              write(logunit,*) trim(compname(ncomp))//'_use_data_first_import is ', is_local%wrap%med_data_force_first(ncomp)
-          endif    
+          endif
        end if
     end do
 
@@ -1067,7 +1067,7 @@ contains
     if (ChkErr(rc,__LINE__,u_FILE_u)) return
 
     !------------------
-    ! Recieve Grids
+    ! Receive Grids
     !------------------
 
     do n1 = 1,ncomps
@@ -1832,7 +1832,7 @@ contains
       if (trim(coupling_mode) == 'cesm') then
          call esmFldsExchange_cesm(gcomp, phase='initialize', rc=rc)
          if (ChkErr(rc,__LINE__,u_FILE_u)) return
-      else if (trim(coupling_mode(1:3)) == 'ufs') then
+      else if (coupling_mode(1:3) == 'ufs') then
          call esmFldsExchange_ufs(gcomp, phase='initialize', rc=rc)
          if (ChkErr(rc,__LINE__,u_FILE_u)) return
       else if (coupling_mode(1:4) == 'hafs') then
