@@ -172,6 +172,7 @@ contains
     integer                 :: m,n        ! indices
     character(CL)           :: time_units   ! units of time variable
     character(CL)           :: hist_file    ! history file name
+    integer                 :: hist_tilesize(ncomps,3) ! number of tiles, tile xdim, tile ydim
     real(r8)                :: time_val     ! time coordinate output
     real(r8)                :: time_bnds(2) ! time bounds output
     logical                 :: write_now    ! true => write to history type
@@ -206,6 +207,19 @@ contains
           call NUOPC_CompAttributeGet(gcomp, name='history_n', value=cvalue, rc=rc)
           if (ChkErr(rc,__LINE__,u_FILE_u)) return
           read(cvalue,*) hist_n_all_inst
+
+          do n = 2,ncomps ! skip the mediator here
+             ! Determine if tiled output to history file is requested for any component
+             call NUOPC_CompAttributeGet(gcomp, name='history_tile_'//trim(compname(n), isPresent=isPresent, isSet=isSet, rc=rc)
+             if (ChkErr(rc,__LINE__,u_FILE_u)) return
+             if (isPresent .and. isSet) then
+                call NUOPC_CompAttributeGet(gcomp, name='history_tile_'//trim(compname(n)), value=cvalue, rc=rc)
+                if (ChkErr(rc,__LINE__,u_FILE_u)) return
+                read(cvalue,*) hist_tilesize(n,1:3)
+             else
+                hist_tilesize(n,:) = 0
+             end if
+          end do
        else
           ! If attribute is not present - don't write history output
           hist_option_all_inst = 'none'
@@ -322,12 +336,14 @@ contains
                 if (is_local%wrap%comp_present(n)) then
                    if (ESMF_FieldBundleIsCreated(is_local%wrap%FBimp(n,n),rc=rc)) then
                       call med_io_write(io_file, is_local%wrap%FBimp(n,n), whead(m), wdata(m), &
-                           is_local%wrap%nx(n), is_local%wrap%ny(n), nt=1, pre=trim(compname(n))//'Imp', rc=rc)
+                           is_local%wrap%nx(n), is_local%wrap%ny(n), nt=1, pre=trim(compname(n))//'Imp', &
+                           tilesize=hist_tilesize(n,:), rc=rc)
                       if (ChkErr(rc,__LINE__,u_FILE_u)) return
                    endif
                    if (ESMF_FieldBundleIsCreated(is_local%wrap%FBexp(n),rc=rc)) then
                       call med_io_write(io_file, is_local%wrap%FBexp(n), whead(m), wdata(m), &
-                           is_local%wrap%nx(n), is_local%wrap%ny(n), nt=1, pre=trim(compname(n))//'Exp', rc=rc)
+                           is_local%wrap%nx(n), is_local%wrap%ny(n), nt=1, pre=trim(compname(n))//'Exp', &
+                           tilesize=hist_tilesize(n,:), rc=rc)
                       if (ChkErr(rc,__LINE__,u_FILE_u)) return
                    endif
                 end if
