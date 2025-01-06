@@ -57,7 +57,7 @@ contains
     character(len=*) , parameter   :: subname='(esmFldsExchange_ufs)'
 
     ! component name
-    character(len=CS) :: lnd_name = ''    
+    character(len=CS) :: lnd_name = ''
     !--------------------------------------
 
     rc = ESMF_SUCCESS
@@ -627,7 +627,7 @@ contains
        else
           if ( fldchk(is_local%wrap%FBexp(compice)        , fldname, rc=rc) .and. &
                fldchk(is_local%wrap%FBImp(compatm,compatm), fldname, rc=rc)) then
-             call addmap_from(compatm, fldname, compice, maptype, 'one', 'unset')
+             call addmap_from(compatm, fldname, compice, mapbilnr, 'one', 'unset')
              call addmrg_to(compice, fldname, mrg_from=compatm, mrg_fld=fldname, mrg_type='copy')
           end if
        end if
@@ -801,8 +801,8 @@ contains
                 call addmrg_to(complnd, fldname, mrg_from=compatm, mrg_fld=fldname, mrg_type='copy')
              end if
           end if
-       end do 
-       deallocate(flds)       
+       end do
+       deallocate(flds)
     end if ! lm4
 
   end subroutine esmFldsExchange_ufs

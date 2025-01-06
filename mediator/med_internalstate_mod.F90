@@ -671,7 +671,7 @@ contains
     if (is_local%wrap%comp_present(compice)) defaultMasks(compice,:) = 0
     if (is_local%wrap%comp_present(compwav)) defaultMasks(compwav,:) = 0
     if ( coupling_mode(1:3) == 'ufs') then
-       if (is_local%wrap%comp_present(compatm)) defaultMasks(compatm,:) = 1
+       if (is_local%wrap%comp_present(compatm)) defaultMasks(compatm,2) = 1
     endif
     if ( trim(coupling_mode) == 'hafs') then
        if (is_local%wrap%comp_present(compatm)) defaultMasks(compatm,1) = 1
