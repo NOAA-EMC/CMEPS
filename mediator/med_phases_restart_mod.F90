@@ -15,7 +15,7 @@ module med_phases_restart_mod
   use med_phases_prep_rof_mod , only : FBlndAccum2rof_l, lndAccum2rof_cnt
   use pio                     , only : file_desc_t
 #ifndef CESMCOUPLED
-  use shr_is_restart_fh_mod, only : init_is_restart_fh, is_restart_fh, is_restart_fh_type
+  use shr_is_restart_fh_mod   , only : init_is_restart_fh, is_restart_fh, is_restart_fh_type
 #endif
   implicit none
   private
