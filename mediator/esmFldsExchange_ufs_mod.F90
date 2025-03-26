@@ -53,6 +53,8 @@ contains
     type(InternalState) :: is_local
     integer             :: n, maptype
     logical             :: med_aoflux_to_ocn
+    logical             :: mapuv_with_cart3d
+    logical             :: isPresent, isSet
     character(len=CX)   :: msgString
     character(len=CL)   :: cvalue
     character(len=CS)   :: fldname
@@ -87,6 +89,16 @@ contains
        call NUOPC_CompAttributeGet(gcomp, name="LND_model", value=cvalue, rc=rc)
        if (ChkErr(rc,__LINE__,u_FILE_u)) return
        lnd_name = trim(cvalue)
+    end if
+
+    ! uv cart3d mapping, default is true
+    mapuv_with_cart3d = .true.
+    call NUOPC_CompAttributeGet(gcomp, name='mapuv_with_cart3d', value=cvalue, isPresent=isPresent, isSet=isSet, rc=rc)
+    if (chkerr(rc,__LINE__,u_FILE_u)) return
+    if (isPresent .and. isSet) then
+       if (trim(cvalue) == 'false') then
+          mapuv_with_cart3d = .false.
+       end if
     end if
 
     if (trim(coupling_mode) == 'ufs.nfrac.aoflux' .or. trim(coupling_mode) == 'ufs.frac.aoflux') then
@@ -456,7 +468,11 @@ contains
                   fldchk(is_local%wrap%FBImp(compice,compice), 'Fioi_'//fldname, rc=rc) .and. &
                   fldchk(is_local%wrap%FBImp(compatm,compatm), 'Faxa_'//fldname, rc=rc)) then
                 call addmap_from(compice, 'Fioi_'//fldname, compocn, mapfcopy, 'unset', 'unset')
-                call addmap_from(compatm, 'Faxa_'//fldname, compocn, mapconsf_uv3d, 'aofrac', 'unset')
+                if (mapuv_with_cart3d) then
+                   call addmap_from(compatm, 'Faxa_'//fldname, compocn, mapconsf_uv3d, 'aofrac', 'unset')
+                else
+                   call addmap_from(compatm, 'Faxa_'//fldname, compocn, mapconsf_aofrac, 'aofrac', 'unset')
+                end if
                 call addmrg_to(compocn, 'Foxx_'//fldname, &
                      mrg_from=compice, mrg_fld='Fioi_'//fldname, mrg_type='merge', mrg_fracname='ifrac')
                 call addmrg_to(compocn, 'Foxx_'//fldname, &
@@ -640,7 +656,7 @@ contains
        else
           if ( fldchk(is_local%wrap%FBexp(compice)        , fldname, rc=rc) .and. &
                fldchk(is_local%wrap%FBImp(compatm,compatm), fldname, rc=rc)) then
-             call addmap_from(compatm, fldname, compice, maptype, 'one', 'unset')
+             call addmap_from(compatm, fldname, compice, mapbilnr, 'one', 'unset')
              call addmrg_to(compice, fldname, mrg_from=compatm, mrg_fld=fldname, mrg_type='copy')
           end if
        end if
@@ -659,7 +675,11 @@ contains
        else
           if ( fldchk(is_local%wrap%FBexp(compice)        , fldname, rc=rc) .and. &
                fldchk(is_local%wrap%FBImp(compatm,compatm), fldname, rc=rc)) then
-             call addmap_from(compatm, fldname, compice, mappatch_uv3d, 'one', 'unset')
+             if (mapuv_with_cart3d) then
+                call addmap_from(compatm, fldname, compice, mappatch_uv3d, 'one', 'unset')
+             else
+                call addmap_from(compatm, fldname, compice, mappatch, 'one', 'unset')
+             end if
              call addmrg_to(compice, fldname, mrg_from=compatm, mrg_fld=fldname, mrg_type='copy')
           end if
        end if
