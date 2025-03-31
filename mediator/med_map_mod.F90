@@ -10,7 +10,7 @@ module med_map_mod
   use med_utils_mod         , only : chkerr    => med_utils_ChkErr
   use perf_mod              , only : t_startf, t_stopf
   use shr_log_mod           , only : shr_log_error
-  
+
   implicit none
   private
 
@@ -474,7 +474,7 @@ contains
           call ESMF_FieldRegridStore(fldsrc, flddst, routehandle=routehandles(mapbilnr), &
                srcMaskValues=(/srcMaskValue/),            &
                dstMaskValues=(/dstMaskValue/),            &
-	       regridmethod=ESMF_REGRIDMETHOD_BILINEAR,   &
+               regridmethod=ESMF_REGRIDMETHOD_BILINEAR,   &
                polemethod=polemethod,                     &
                srcTermProcessing=srcTermProcessing_Value, &
                ignoreDegenerate=.true.,                   &
