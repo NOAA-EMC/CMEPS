@@ -17,6 +17,8 @@ module med_phases_restart_mod
 #ifndef CESMCOUPLED
   use shr_is_restart_fh_mod, only : init_is_restart_fh, is_restart_fh, is_restart_fh_type
 #endif
+  use ufs_trace_mod
+
   implicit none
   private
 
@@ -193,6 +195,7 @@ contains
     character(len=*), parameter :: subname='(med_phases_restart_write)'
     !---------------------------------------
 
+    if (maintask) call ufs_trace("cmeps", "med_phases_restart_write", "B")
     call t_startf('MED:'//subname)
     if (dbug_flag > 5) then
        call ESMF_LogWrite(trim(subname)//": called", ESMF_LOGMSG_INFO)
@@ -489,6 +492,7 @@ contains
     endif
     call t_stopf('MED:'//subname)
 
+    if (maintask) call ufs_trace("cmeps", "med_phases_restart_write", "E")
   end subroutine med_phases_restart_write
 
   !===============================================================================
@@ -525,6 +529,7 @@ contains
     logical                :: isPresent
     character(len=*), parameter :: subname='(med_phases_restart_read)'
     !---------------------------------------
+    if (maintask) call ufs_trace("cmeps", "med_phases_restart_read", "B")
     call t_startf('MED:'//subname)
     call ESMF_LogWrite(trim(subname)//": called", ESMF_LOGMSG_INFO)
     rc = ESMF_SUCCESS
@@ -644,6 +649,7 @@ contains
     call ESMF_LogWrite(trim(subname)//": done", ESMF_LOGMSG_INFO)
     call t_stopf('MED:'//subname)
 
+    if (maintask) call ufs_trace("cmeps", "med_phases_restart_read", "E")
   end subroutine med_phases_restart_read
 
   !===============================================================================
