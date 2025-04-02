@@ -354,7 +354,7 @@ contains
     use ESMF                  , only : ESMF_REGRIDMETHOD_BILINEAR, ESMF_REGRIDMETHOD_PATCH
     use ESMF                  , only : ESMF_REGRIDMETHOD_CONSERVE, ESMF_NORMTYPE_DSTAREA, ESMF_NORMTYPE_FRACAREA
     use ESMF                  , only : ESMF_UNMAPPEDACTION_IGNORE, ESMF_REGRIDMETHOD_NEAREST_STOD
-    use ESMF                  , only : ESMF_EXTRAPMETHOD_NEAREST_STOD
+    use ESMF                  , only : ESMF_EXTRAPMETHOD_NEAREST_STOD, ESMF_REGRIDMETHOD_CONSERVE_2ND
     use ESMF                  , only : ESMF_Mesh, ESMF_MeshLoc, ESMF_MESHLOC_ELEMENT, ESMF_TYPEKIND_I4
     use ESMF                  , only : ESMF_MeshGet, ESMF_DistGridGet, ESMF_DistGrid, ESMF_TYPEKIND_R8
     use ESMF                  , only : ESMF_FieldGet, ESMF_FieldCreate, ESMF_FieldDestroy
@@ -557,13 +557,13 @@ contains
           write(logunit,'(A)') trim(subname)//' creating RH '//trim(mapname)//' for '//trim(string)
        end if
        call ESMF_FieldRegridStore(fldsrc, flddst, routehandle=routehandles(mapconsf_uv3d), &
-            srcMaskValues=(/srcMaskValue/),            &
-            dstMaskValues=(/dstMaskValue/),            &
-            regridmethod=ESMF_REGRIDMETHOD_CONSERVE,   &
-            normType=ESMF_NORMTYPE_FRACAREA,           &
-            srcTermProcessing=srcTermProcessing_Value, &
-            ignoreDegenerate=.true.,                   &
-            dstStatusField=lfield,                     &
+            srcMaskValues=(/srcMaskValue/),              &
+            dstMaskValues=(/dstMaskValue/),              &
+            regridmethod=ESMF_REGRIDMETHOD_CONSERVE_2ND, &
+            normType=ESMF_NORMTYPE_FRACAREA,             &
+            srcTermProcessing=srcTermProcessing_Value,   &
+            ignoreDegenerate=.true.,                     &
+            dstStatusField=lfield,                       &
             unmappedaction=ESMF_UNMAPPEDACTION_IGNORE, rc=rc)
        if (chkerr(rc,__LINE__,u_FILE_u)) return
     else if (mapindex == mapconsd .or. mapindex == mapnstod_consd) then
