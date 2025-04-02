@@ -17,6 +17,7 @@ module med_phases_restart_mod
 #ifndef CESMCOUPLED
   use shr_is_restart_fh_mod, only : init_is_restart_fh, is_restart_fh, is_restart_fh_type
 #endif
+  use shr_log_mod             , only : shr_log_error
   use ufs_trace_mod
 
   implicit none
@@ -50,8 +51,8 @@ contains
     use ESMF         , only : ESMF_Clock, ESMF_ClockGet, ESMF_ClockAdvance, ESMF_ClockSet
     use ESMF         , only : ESMF_Time, ESMF_TimeInterval, ESMF_TimeIntervalGet
     use ESMF         , only : ESMF_Alarm, ESMF_AlarmSet
-    use ESMF         , only : ESMF_LogWrite, ESMF_LOGMSG_INFO, ESMF_LOGMSG_ERROR
-    use ESMF         , only : ESMF_SUCCESS, ESMF_FAILURE
+    use ESMF         , only : ESMF_LogWrite, ESMF_LOGMSG_INFO
+    use ESMF         , only : ESMF_SUCCESS
     use NUOPC        , only : NUOPC_CompAttributeGet
     use NUOPC_Model  , only : NUOPC_ModelGet
     use nuopc_shr_methods, only : AlarmInit
@@ -137,8 +138,8 @@ contains
 
     use ESMF       , only : ESMF_GridComp, ESMF_VM, ESMF_Clock, ESMF_Time, ESMF_Alarm
     use ESMF       , only : ESMF_TimeInterval, ESMF_CalKind_Flag, ESMF_MAXSTR
-    use ESMF       , only : ESMF_LogWrite, ESMF_LOGMSG_INFO, ESMF_SUCCESS, ESMF_FAILURE
-    use ESMF       , only : ESMF_LOGMSG_ERROR, operator(==), operator(-)
+    use ESMF       , only : ESMF_LogWrite, ESMF_LOGMSG_INFO, ESMF_SUCCESS
+    use ESMF       , only : operator(==), operator(-)
     use ESMF       , only : ESMF_GridCompGet, ESMF_ClockGet, ESMF_ClockGetNextTime
     use ESMF       , only : ESMF_TimeGet, ESMF_ClockGetAlarm, ESMF_ClockPrint, ESMF_TimeIntervalGet
     use ESMF       , only : ESMF_AlarmIsRinging, ESMF_AlarmRingerOff, ESMF_FieldBundleIsCreated
@@ -191,7 +192,9 @@ contains
     real(R8)                   :: tbnds(2)       ! CF1.0 time bounds
     logical                    :: isPresent
     logical                    :: first_time = .true.
+#ifndef CESMCOUPLED
     logical                    :: write_restartfh
+#endif
     character(len=*), parameter :: subname='(med_phases_restart_write)'
     !---------------------------------------
 
@@ -501,8 +504,8 @@ contains
     ! Read mediator restart
 
     use ESMF             , only : ESMF_GridComp, ESMF_VM, ESMF_Clock, ESMF_Time, ESMF_MAXSTR
-    use ESMF             , only : ESMF_LogWrite, ESMF_LOGMSG_INFO, ESMF_SUCCESS, ESMF_FAILURE
-    use ESMF             , only : ESMF_LOGMSG_ERROR, ESMF_VMBroadCast
+    use ESMF             , only : ESMF_LogWrite, ESMF_LOGMSG_INFO, ESMF_SUCCESS
+    use ESMF             , only : ESMF_VMBroadCast
     use ESMF             , only : ESMF_GridCompGet, ESMF_ClockGet, ESMF_ClockPrint
     use ESMF             , only : ESMF_FieldBundleIsCreated, ESMF_TimeGet
     use NUOPC            , only : NUOPC_CompAttributeGet
@@ -526,7 +529,6 @@ contains
     character(ESMF_MAXSTR) :: case_name      ! case name
     character(ESMF_MAXSTR) :: restart_file   ! Local path to restart filename
     character(ESMF_MAXSTR) :: restart_pfile  ! Local path to restart pointer filename
-    logical                :: isPresent
     character(len=*), parameter :: subname='(med_phases_restart_read)'
     !---------------------------------------
     if (maintask) call ufs_trace("cmeps", "med_phases_restart_read", "B")
@@ -568,8 +570,7 @@ contains
        open(newunit=unitn, file=restart_pfile, form='FORMATTED', status='old', iostat=ierr)
        read (unitn,'(a)', iostat=ierr) restart_file
        if (ierr < 0) then
-          call ESMF_LogWrite(trim(subname)//' rpointer file read returns error', ESMF_LOGMSG_INFO)
-          rc=ESMF_Failure
+          call shr_log_error(trim(subname)//' rpointer file read returns error', rc=rc)
           return
        end if
        close(unitn)
