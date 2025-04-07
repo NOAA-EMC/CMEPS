@@ -690,16 +690,17 @@ contains
     if (is_local%wrap%comp_present(compice)) defaultMasks(compice,:) = 0
     if (is_local%wrap%comp_present(compwav)) defaultMasks(compwav,:) = 0
     if ( coupling_mode(1:3) == 'ufs') then
-       if (is_local%wrap%comp_present(compatm)) defaultMasks(compatm,2) = 1
+       if (is_local%wrap%comp_present(compatm)) then
+          if (atm_name(1:4) == 'datm') then
+             defaultMasks(compatm,1) = 0
+          else
+             defaultMasks(compatm,2) = 1
+          end if
+       end if
     endif
-    if ( trim(coupling_mode) == 'hafs') then
+    if ( coupling_mode(1:4) == 'hafs') then
        if (is_local%wrap%comp_present(compatm)) defaultMasks(compatm,1) = 1
     endif
-    if ( trim(coupling_mode) /= 'cesm') then
-       if (is_local%wrap%comp_present(compatm) .and. trim(atm_name(1:4)) == 'datm') then
-          defaultMasks(compatm,1) = 0
-       end if
-    end if
 
   end subroutine med_internalstate_defaultmasks
 
