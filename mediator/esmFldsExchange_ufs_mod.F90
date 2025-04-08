@@ -668,7 +668,7 @@ contains
     deallocate(flds)
 
     allocate(flds(2))
-    flds = (/'Sa_u   ', 'Sa_v   '/)
+    flds = (/'Sa_u', 'Sa_v'/)
     do n = 1,size(flds)
        fldname = trim(flds(n))
        if (phase == 'advertise') then
