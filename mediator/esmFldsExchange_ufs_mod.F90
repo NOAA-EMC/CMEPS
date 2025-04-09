@@ -755,7 +755,7 @@ contains
        else
           if ( fldchk(is_local%wrap%FBexp(compwav)        , fldname, rc=rc) .and. &
                fldchk(is_local%wrap%FBImp(compatm,compatm), fldname, rc=rc)) then
-             call addmap_from(compatm, fldname, compwav, mapbilnr_nstod, 'one', 'unset')
+             call addmap_from(compatm, fldname, compwav, mapbilnr, 'one', 'unset')
              call addmrg_to(compwav, fldname, mrg_from=compatm, mrg_fld=fldname, mrg_type='copy')
           end if
        end if
