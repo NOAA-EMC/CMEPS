@@ -16,6 +16,7 @@ module med_phases_restart_mod
   use pio                     , only : file_desc_t
 #ifndef CESMCOUPLED
   use shr_is_restart_fh_mod   , only : init_is_restart_fh, is_restart_fh, is_restart_fh_type
+  use shr_is_restart_fh_mod   , only : log_restart_fh
 #endif
   use shr_log_mod             , only : shr_log_error
 
@@ -280,7 +281,7 @@ contains
           write(nexttimestr,'(i4.4,a,i2.2,a,i2.2,a,i5.5)') yr,'-',mon,'-',day,'-',sec
        else
           write(nexttimestr,'(i6.6,a,i2.2,a,i2.2,a,i5.5)') yr,'-',mon,'-',day,'-',sec
-       endif   
+       endif
        if (dbug_flag > 1) then
           call ESMF_LogWrite(trim(subname)//": nexttime = "//trim(nexttimestr), ESMF_LOGMSG_INFO)
        endif
@@ -490,6 +491,10 @@ contains
        ! Close file
        call med_io_close(io_file, rc=rc)
        if (ChkErr(rc,__LINE__,u_FILE_u)) return
+#ifndef CESMCOUPLED
+       call log_restart_fh(nextTime, startTime, 'cmeps', rc=rc)
+       if (ChkErr(rc,__LINE__,u_FILE_u)) return
+#endif
     endif
 
     !---------------------------------------
