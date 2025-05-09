@@ -43,6 +43,8 @@ contains
     use esmFlds               , only : addmap_aoflux => med_fldList_addmap_aoflux
     use esmFlds               , only : addfld_ocnalb => med_fldList_addfld_ocnalb
     use esmFlds               , only : addmap_ocnalb => med_fldList_addmap_ocnalb
+    !debug
+    use med_internalstate_mod    , only : test_bilnr
 
     ! input/output parameters:
     type(ESMF_GridComp)              :: gcomp
@@ -159,7 +161,11 @@ contains
              call addfld_from(compatm , fldname)
           else
              if ( fldchk(is_local%wrap%FBImp(compatm,compatm), fldname, rc=rc)) then
-                call addmap_from(compatm, fldname, compocn, maptype, 'one', 'unset')
+                if (trim(test_bilnr) .eq. 'true') then
+                   call addmap_from(compatm, fldname, compocn, mapbilnr, 'one', 'unset')
+                else
+                   call addmap_from(compatm, fldname, compocn, maptype, 'one', 'unset')
+                end if
              end if
           end if
        end do
@@ -656,7 +662,11 @@ contains
        else
           if ( fldchk(is_local%wrap%FBexp(compice)        , fldname, rc=rc) .and. &
                fldchk(is_local%wrap%FBImp(compatm,compatm), fldname, rc=rc)) then
-             call addmap_from(compatm, fldname, compice, mapbilnr, 'one', 'unset')
+             if (trim(test_bilnr) .eq. 'true') then
+                call addmap_from(compatm, fldname, compice, mapbilnr, 'one', 'unset')
+             else
+                call addmap_from(compatm, fldname, compice, maptype, 'one', 'unset')
+             end if
              call addmrg_to(compice, fldname, mrg_from=compatm, mrg_fld=fldname, mrg_type='copy')
           end if
        end if
@@ -678,7 +688,11 @@ contains
              if (mapuv_with_cart3d) then
                 call addmap_from(compatm, fldname, compice, mappatch_uv3d, 'one', 'unset')
              else
-                call addmap_from(compatm, fldname, compice, mappatch, 'one', 'unset')
+                if (trim(test_bilnr) .eq. 'true') then
+                   call addmap_from(compatm, fldname, compice, mappatch, 'one', 'unset')
+                else
+                   call addmap_from(compatm, fldname, compice, maptype, 'one', 'unset')
+                end if
              end if
              call addmrg_to(compice, fldname, mrg_from=compatm, mrg_fld=fldname, mrg_type='copy')
           end if
