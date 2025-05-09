@@ -656,11 +656,7 @@ contains
        else
           if ( fldchk(is_local%wrap%FBexp(compice)        , fldname, rc=rc) .and. &
                fldchk(is_local%wrap%FBImp(compatm,compatm), fldname, rc=rc)) then
-             if (med_aoflux_to_ocn) then
-                call addmap_from(compatm, fldname, compice, maptype, 'one', 'unset')
-             else
-                call addmap_from(compatm, fldname, compice, mapbilnr, 'one', 'unset')
-             end if
+             call addmap_from(compatm, fldname, compice, mapbilnr, 'one', 'unset')
              call addmrg_to(compice, fldname, mrg_from=compatm, mrg_fld=fldname, mrg_type='copy')
           end if
        end if
@@ -679,14 +675,10 @@ contains
        else
           if ( fldchk(is_local%wrap%FBexp(compice)        , fldname, rc=rc) .and. &
                fldchk(is_local%wrap%FBImp(compatm,compatm), fldname, rc=rc)) then
-             if (med_aoflux_to_ocn) then
-                call addmap_from(compatm, fldname, compice, maptype, 'one', 'unset')
+             if (mapuv_with_cart3d) then
+                call addmap_from(compatm, fldname, compice, mappatch_uv3d, 'one', 'unset')
              else
-                if (mapuv_with_cart3d) then
-                   call addmap_from(compatm, fldname, compice, mappatch_uv3d, 'one', 'unset')
-                else
-                   call addmap_from(compatm, fldname, compice, mappatch, 'one', 'unset')
-                end if
+                call addmap_from(compatm, fldname, compice, mappatch, 'one', 'unset')
              end if
              call addmrg_to(compice, fldname, mrg_from=compatm, mrg_fld=fldname, mrg_type='copy')
           end if
