@@ -52,8 +52,6 @@ module MED
   use esmFldsExchange_hafs_mod , only : esmFldsExchange_hafs
   use med_phases_profile_mod   , only : med_phases_profile_finalize
   use shr_log_mod              , only : shr_log_error
-  ! debug
-  use med_internalstate_mod    , only : test_bilnr
 
   implicit none
   private
@@ -824,17 +822,6 @@ contains
     if (maintask) then
        write(logunit,*) '========================================================'
        write(logunit,'(a)')trim(subname)//' Mediator Coupling Mode is '//trim(coupling_mode)
-       write(logunit,*) '========================================================'
-       write(logunit,*)
-    end if
-
-    test_bilnr = 'false'
-    call NUOPC_CompAttributeGet(gcomp, name='test_bilnr', value=test_bilnr, rc=rc)
-    if (chkerr(rc,__LINE__,u_FILE_u)) return
-    call ESMF_LogWrite('test_bilnr = '// trim(test_bilnr), ESMF_LOGMSG_INFO)
-    if (maintask) then
-       write(logunit,*) '========================================================'
-       write(logunit,'(a)')trim(subname)//' Mediator test_bilnr is '//trim(test_bilnr)
        write(logunit,*) '========================================================'
        write(logunit,*)
     end if
