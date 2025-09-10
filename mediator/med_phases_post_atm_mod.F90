@@ -35,7 +35,9 @@ contains
     use med_utils_mod         , only : chkerr    => med_utils_ChkErr
     use med_internalstate_mod , only : compocn, compatm, compice, complnd, compwav
     use perf_mod              , only : t_startf, t_stopf
+#ifdef UFS_TRACING
     use ufs_trace_mod
+#endif
 
     ! input/output variables
     type(ESMF_GridComp)  :: gcomp
@@ -48,7 +50,9 @@ contains
     !-------------------------------------------------------------------------------
 
     rc = ESMF_SUCCESS
+#ifdef UFS_TRACING
     if (maintask) call ufs_trace("cmeps", "med_phases_post_atm", "B")
+#endif
 
     call t_startf('MED:'//subname)
     if (dbug_flag > 20) then
@@ -128,7 +132,9 @@ contains
     end if
     call t_stopf('MED:'//subname)
 
+#ifdef UFS_TRACING
     if (maintask) call ufs_trace("cmeps", "med_phases_post_atm", "E")
+#endif
   end subroutine med_phases_post_atm
 
 end module med_phases_post_atm_mod

@@ -23,7 +23,9 @@ module med_phases_prep_atm_mod
   use perf_mod              , only : t_startf, t_stopf
   use med_phases_aofluxes_mod, only : med_aofluxes_map_xgrid2agrid_output
   use med_phases_aofluxes_mod, only : med_aofluxes_map_ogrid2agrid_output
+#ifdef UFS_TRACING
   use ufs_trace_mod
+#endif
 
   implicit none
   private
@@ -61,7 +63,9 @@ contains
     character(len=*),parameter :: subname='(med_phases_prep_atm)'
     !-------------------------------------------------------------------------------
 
+#ifdef UFS_TRACING
     if (maintask) call ufs_trace("cmeps", "med_phases_prep_atm", "B")
+#endif
     call t_startf('MED:'//subname)
     rc = ESMF_SUCCESS
 
@@ -250,7 +254,9 @@ contains
     end if
     call t_stopf('MED:'//subname)
 
+#ifdef UFS_TRACING
     if (maintask) call ufs_trace("cmeps", "med_phases_prep_atm", "E")
+#endif
   end subroutine med_phases_prep_atm
 
   !-----------------------------------------------------------------------------

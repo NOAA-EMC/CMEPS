@@ -11,7 +11,9 @@ module med_phases_ocnalb_mod
   use shr_orb_mod           , only : shr_orb_cosz, shr_orb_decl
   use shr_orb_mod           , only : shr_orb_params, SHR_ORB_UNDEF_INT, SHR_ORB_UNDEF_REAL
   use shr_log_mod           , only : shr_log_unit, shr_log_error
+#ifdef UFS_TRACING
   use ufs_trace_mod
+#endif
   implicit none
   private
 
@@ -315,7 +317,9 @@ contains
     !---------------------------------------
 
     rc = ESMF_SUCCESS
+#ifdef UFS_TRACING
     if (maintask) call ufs_trace("cmeps", "med_phases_ocnalb_run", "B")
+#endif
 
     ! Determine main task
     call ESMF_GridCompGet(gcomp, vm=vm, rc=rc)
@@ -509,7 +513,9 @@ contains
     end if
     call t_stopf('MED:'//subname)
 
+#ifdef UFS_TRACING
     if (maintask) call ufs_trace("cmeps", "med_phases_ocnalb_run", "E")
+#endif
   end subroutine med_phases_ocnalb_run
 
 !===============================================================================

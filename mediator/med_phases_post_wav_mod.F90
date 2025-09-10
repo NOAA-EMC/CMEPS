@@ -27,7 +27,9 @@ contains
     use med_internalstate_mod , only : compwav, compatm, compocn, compice
     use med_phases_history_mod, only : med_phases_history_write_comp
     use perf_mod              , only : t_startf, t_stopf
+#ifdef UFS_TRACING
     use ufs_trace_mod
+#endif
 
     ! input/output variables
     type(ESMF_GridComp)  :: gcomp
@@ -39,7 +41,9 @@ contains
     character(len=*),parameter :: subname='(med_phases_post_wav)'
     !-------------------------------------------------------------------------------
 
+#ifdef UFS_TRACING
     if (maintask) call ufs_trace("cmeps", "med_phases_post_wav", "B")
+#endif
     call t_startf('MED:'//subname)
     rc = ESMF_SUCCESS
 
@@ -99,7 +103,9 @@ contains
        call ESMF_LogWrite(subname//' done', ESMF_LOGMSG_INFO)
     end if
 
+#ifdef UFS_TRACING
     if (maintask) call ufs_trace("cmeps", "med_phases_post_wav", "E")
+#endif
   end subroutine med_phases_post_wav
 
 end module med_phases_post_wav_mod
