@@ -19,9 +19,7 @@ module med_phases_restart_mod
   use shr_is_restart_fh_mod   , only : log_restart_fh
 #endif
   use shr_log_mod             , only : shr_log_error
-#ifdef UFS_TRACING
-  use ufs_trace_mod
-#endif
+  use med_ufs_trace_wrapper_mod
 
   implicit none
   private
@@ -201,9 +199,7 @@ contains
     character(len=*), parameter :: subname='(med_phases_restart_write)'
     !---------------------------------------
 
-#ifdef UFS_TRACING
-    if (maintask) call ufs_trace("cmeps", "med_phases_restart_write", "B")
-#endif
+    if (maintask) call ufs_trace_wrapper("cmeps", "med_phases_restart_write", "B")
     call t_startf('MED:'//subname)
     if (dbug_flag > 5) then
        call ESMF_LogWrite(trim(subname)//": called", ESMF_LOGMSG_INFO)
@@ -514,9 +510,7 @@ contains
     endif
     call t_stopf('MED:'//subname)
 
-#ifdef UFS_TRACING
-    if (maintask) call ufs_trace("cmeps", "med_phases_restart_write", "E")
-#endif
+    if (maintask) call ufs_trace_wrapper("cmeps", "med_phases_restart_write", "E")
   end subroutine med_phases_restart_write
 
   !===============================================================================
@@ -552,9 +546,7 @@ contains
     character(ESMF_MAXSTR) :: restart_pfile  ! Local path to restart pointer filename
     character(len=*), parameter :: subname='(med_phases_restart_read)'
     !---------------------------------------
-#ifdef UFS_TRACING
-    if (maintask) call ufs_trace("cmeps", "med_phases_restart_read", "B")
-#endif
+    if (maintask) call ufs_trace_wrapper("cmeps", "med_phases_restart_read", "B")
     call t_startf('MED:'//subname)
     call ESMF_LogWrite(trim(subname)//": called", ESMF_LOGMSG_INFO)
     rc = ESMF_SUCCESS
@@ -673,9 +665,7 @@ contains
     call ESMF_LogWrite(trim(subname)//": done", ESMF_LOGMSG_INFO)
     call t_stopf('MED:'//subname)
 
-#ifdef UFS_TRACING
-    if (maintask) call ufs_trace("cmeps", "med_phases_restart_read", "E")
-#endif
+    if (maintask) call ufs_trace_wrapper("cmeps", "med_phases_restart_read", "E")
   end subroutine med_phases_restart_read
 
   !===============================================================================

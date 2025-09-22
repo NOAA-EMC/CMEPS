@@ -31,9 +31,7 @@ contains
     use med_phases_history_mod  , only : med_phases_history_write_comp
     use med_phases_prep_glc_mod , only : med_phases_prep_glc_accum_ocn
     use perf_mod                , only : t_startf, t_stopf
-#ifdef UFS_TRACING
-    use ufs_trace_mod
-#endif
+    use med_ufs_trace_wrapper_mod
 
     ! input/output variables
     type(ESMF_GridComp)  :: gcomp
@@ -46,9 +44,7 @@ contains
     !---------------------------------------
 
     rc = ESMF_SUCCESS
-#ifdef UFS_TRACING
-    if (maintask) call ufs_trace("cmeps", "med_phases_post_ocn", "B")
-#endif
+    if (maintask) call ufs_trace_wrapper("cmeps", "med_phases_post_ocn", "B")
 
     call t_startf('MED:'//subname)
     if (dbug_flag > 20) then
@@ -107,9 +103,7 @@ contains
     end if
     call t_stopf('MED:'//subname)
 
-#ifdef UFS_TRACING
-    if (maintask) call ufs_trace("cmeps", "med_phases_post_ocn", "E")
-#endif
+    if (maintask) call ufs_trace_wrapper("cmeps", "med_phases_post_ocn", "E")
   end subroutine med_phases_post_ocn
 
 end module med_phases_post_ocn_mod

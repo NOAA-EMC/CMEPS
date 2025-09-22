@@ -41,9 +41,7 @@ contains
     use med_internalstate_mod , only : coupling_mode
     use esmFlds               , only : med_fldList_GetFldListTo
     use perf_mod              , only : t_startf, t_stopf
-#ifdef UFS_TRACING
-    use ufs_trace_mod
-#endif
+    use med_ufs_trace_wrapper_mod
 
     ! input/output variables
     type(ESMF_GridComp)  :: gcomp
@@ -62,9 +60,7 @@ contains
     character(len=*),parameter     :: subname='(med_phases_prep_ice)'
     !---------------------------------------
 
-#ifdef UFS_TRACING
-    if (maintask) call ufs_trace("cmeps", "med_phases_prep_ice", "B")
-#endif
+    if (maintask) call ufs_trace_wrapper("cmeps", "med_phases_prep_ice", "B")
     call t_startf('MED:'//subname)
 
     if (dbug_flag > 5) then
@@ -164,9 +160,7 @@ contains
     endif
     call t_stopf('MED:'//subname)
 
-#ifdef UFS_TRACING
-    if (maintask) call ufs_trace("cmeps", "med_phases_prep_ice", "E")
-#endif
+    if (maintask) call ufs_trace_wrapper("cmeps", "med_phases_prep_ice", "E")
   end subroutine med_phases_prep_ice
 
 end module med_phases_prep_ice_mod
