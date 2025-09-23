@@ -24,7 +24,7 @@ module med_phases_history_mod
   use perf_mod              , only : t_startf, t_stopf
   use pio                   , only : file_desc_t
   use shr_log_mod           , only : shr_log_error
-  use med_ufs_trace_wrapper_mod
+  use med_ufs_trace_wrapper_mod, only : ufs_trace_wrapper
 
   implicit none
   private

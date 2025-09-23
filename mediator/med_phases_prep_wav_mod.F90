@@ -21,7 +21,7 @@ module med_phases_prep_wav_mod
   use esmFlds               , only : med_fldList_GetfldListTo
   use med_internalstate_mod , only : compatm, compwav
   use perf_mod              , only : t_startf, t_stopf
-  use med_ufs_trace_wrapper_mod
+  use med_ufs_trace_wrapper_mod, only : ufs_trace_wrapper
 
   implicit none
   private
