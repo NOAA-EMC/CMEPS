@@ -343,7 +343,7 @@ contains
        deallocate(flds)
     end if
 
-    ! to atm: unmerged from mediator, merge will be done under FV3/CCPP composite step
+    ! to atm: unmerged from mediator, merge will be done under UFSATM/CCPP composite step
     ! - zonal surface stress, meridional surface stress
     ! - surface latent heat flux,
     ! - surface sensible heat flux
@@ -395,9 +395,7 @@ contains
     else
        if ( fldchk(is_local%wrap%FBexp(compocn)        , 'Sa_pslv', rc=rc) .and. &
             fldchk(is_local%wrap%FBImp(compatm,compatm), 'Sa_pslv', rc=rc)) then
-          !TODO: this should be bilinear
-          !call addmap_from(compatm, 'Sa_pslv', compocn, mapbilnr, 'one', a2oi_bilnr)
-          call addmap_from(compatm, 'Sa_pslv', compocn, maptype, 'one', a2oi_consf)
+          call addmap_from(compatm, 'Sa_pslv', compocn, mapbilnr, 'one', a2oi_bilnr)
           call addmrg_to(compocn, 'Sa_pslv', mrg_from=compatm, mrg_fld='Sa_pslv', mrg_type='copy')
        end if
     end if
