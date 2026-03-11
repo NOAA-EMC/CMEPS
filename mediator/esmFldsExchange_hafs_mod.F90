@@ -214,7 +214,6 @@ contains
     ! ---------------------------------------------------------------------
     ! to ocn: flux fields
     ! ---------------------------------------------------------------------
-
     if (hafs_attr%atm_present .and. hafs_attr%ocn_present) then
        allocate(F_flds(10,2))
        F_flds(1 ,:) = (/'Faxa_taux     ','Foxx_taux     '/) ! inst_zonal_moment_flx_atm
