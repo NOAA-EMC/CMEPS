@@ -30,24 +30,24 @@ module esmFldsExchange_hafs_mod
        __FILE__
 
   type gcomp_attr
-    character(len=CX) :: atm2ocn_fmap = 'unset'
-    character(len=CX) :: atm2ocn_smap = 'unset'
-    character(len=CX) :: atm2ocn_vmap = 'unset'
-    character(len=CX) :: atm2wav_smap = 'unset'
-    character(len=CX) :: ocn2atm_fmap = 'unset'
-    character(len=CX) :: ocn2atm_smap = 'unset'
-    character(len=CX) :: ocn2wav_smap = 'unset'
-    character(len=CX) :: wav2ocn_smap = 'unset'
-    character(len=CX) :: wav2atm_smap = 'unset'
-    character(len=CS) :: mapnorm      = 'one'
-    logical           :: atm_present  = .false.
-    logical           :: ocn_present  = .false.
-    logical           :: wav_present  = .false.
-  end type
+     character(len=CX) :: atm2ocn_fmap = 'unset'
+     character(len=CX) :: atm2ocn_smap = 'unset'
+     character(len=CX) :: atm2ocn_vmap = 'unset'
+     character(len=CX) :: atm2wav_smap = 'unset'
+     character(len=CX) :: ocn2atm_fmap = 'unset'
+     character(len=CX) :: ocn2atm_smap = 'unset'
+     character(len=CX) :: ocn2wav_smap = 'unset'
+     character(len=CX) :: wav2ocn_smap = 'unset'
+     character(len=CX) :: wav2atm_smap = 'unset'
+     character(len=CS) :: mapnorm      = 'one'
+     logical           :: atm_present  = .false.
+     logical           :: ocn_present  = .false.
+     logical           :: wav_present  = .false.
+  end type gcomp_attr
 
-!===============================================================================
+  !===============================================================================
 contains
-!===============================================================================
+  !===============================================================================
 
   subroutine esmFldsExchange_hafs(gcomp, phase, rc)
 
@@ -64,19 +64,19 @@ contains
     rc = ESMF_SUCCESS
 
     if (phase == 'advertise') then
-      call esmFldsExchange_hafs_advt(gcomp, phase, rc)
-      if (chkerr(rc,__LINE__,u_FILE_u)) return
+       call esmFldsExchange_hafs_advt(gcomp, phase, rc)
+       if (chkerr(rc,__LINE__,u_FILE_u)) return
     elseif (phase == 'fieldcheck') then
-      call esmFldsExchange_hafs_fchk(gcomp, phase, rc)
-      if (chkerr(rc,__LINE__,u_FILE_u)) return
+       call esmFldsExchange_hafs_fchk(gcomp, phase, rc)
+       if (chkerr(rc,__LINE__,u_FILE_u)) return
     elseif (phase == 'initialize') then
-      call esmFldsExchange_hafs_init(gcomp, phase, rc)
-      if (chkerr(rc,__LINE__,u_FILE_u)) return
+       call esmFldsExchange_hafs_init(gcomp, phase, rc)
+       if (chkerr(rc,__LINE__,u_FILE_u)) return
     else
-      call ESMF_LogSetError(ESMF_FAILURE, &
-         msg=trim(subname)//": Phase is set to "//trim(phase), &
-         line=__LINE__, file=__FILE__, rcToReturn=rc)
-      return  ! bail out
+       call ESMF_LogSetError(ESMF_FAILURE, &
+            msg=trim(subname)//": Phase is set to "//trim(phase), &
+            line=__LINE__, file=__FILE__, rcToReturn=rc)
+       return  ! bail out
     endif
 
     call ESMF_LogWrite(trim(subname)//": done", ESMF_LOGMSG_INFO)
@@ -115,11 +115,11 @@ contains
     !=====================================================================
 
     call NUOPC_CompAttributeGet(gcomp, name='ScalarFieldName', &
-       isPresent=isPresent, rc=rc)
+         isPresent=isPresent, rc=rc)
     if (chkerr(rc,__LINE__,u_FILE_u)) return
     if (isPresent) then
        call NUOPC_CompAttributeGet(gcomp, name="ScalarFieldName", &
-          value=cvalue, rc=rc)
+            value=cvalue, rc=rc)
        if (ChkErr(rc,__LINE__,u_FILE_u)) return
        do n = 1,ncomps
           call addfld_from(n, trim(cvalue))
@@ -238,14 +238,14 @@ contains
 
     ! to ocn: partitioned stokes drift from wav
     if (hafs_attr%wav_present .and. hafs_attr%ocn_present) then
-      allocate(S_flds(2))
-      S_flds = (/'Sw_pstokes_x', 'Sw_pstokes_y'/)
-      do n = 1,size(S_flds)
-         fldname = trim(S_flds(n))
-         call addfld_from(compwav , fldname)
-         call addfld_to(compocn   , fldname)
-      end do
-      deallocate(S_flds)
+       allocate(S_flds(2))
+       S_flds = (/'Sw_pstokes_x', 'Sw_pstokes_y'/)
+       do n = 1,size(S_flds)
+          fldname = trim(S_flds(n))
+          call addfld_from(compwav , fldname)
+          call addfld_to(compocn   , fldname)
+       end do
+       deallocate(S_flds)
     end if
 
     !=====================================================================
@@ -315,11 +315,11 @@ contains
 
     if (fldchk(is_local%wrap%FBImp(compocn,compocn),'So_omask',rc=rc)) then
        call ESMF_LogWrite(trim(subname)//": Field connected "//"So_omask", &
-          ESMF_LOGMSG_INFO)
+            ESMF_LOGMSG_INFO)
     else
        call ESMF_LogSetError(ESMF_FAILURE, &
-          msg=trim(subname)//": Field is not connected "//"So_omask", &
-          line=__LINE__, file=__FILE__, rcToReturn=rc)
+            msg=trim(subname)//": Field is not connected "//"So_omask", &
+            line=__LINE__, file=__FILE__, rcToReturn=rc)
        return  ! bail out
     endif
 
@@ -425,8 +425,8 @@ contains
        do n = 1,size(S_flds)
           fldname = trim(S_flds(n))
           if (fldchk(is_local%wrap%FBExp(compatm),trim(fldname),rc=rc) .and. &
-              fldchk(is_local%wrap%FBImp(compwav,compwav),trim(fldname),rc=rc) &
-             ) then
+               fldchk(is_local%wrap%FBImp(compwav,compwav),trim(fldname),rc=rc) &
+               ) then
              call addmap_from(compwav, trim(fldname), compatm, &
                   mapfillv_bilnr, hafs_attr%mapnorm, hafs_attr%wav2atm_smap)
              call addmrg_to(compatm, trim(fldname), &
@@ -499,9 +499,9 @@ contains
        fldname = trim(S_flds(n))
        if ( fldchk(is_local%wrap%FBexp(compocn)        , fldname, rc=rc) .and. &
             fldchk(is_local%wrap%FBImp(compwav,compwav), fldname, rc=rc)) then
-           call addmap_from(compwav, fldname, compocn, mapfillv_bilnr, &
-                hafs_attr%mapnorm, 'unset')
-           call addmrg_to(compocn, fldname, mrg_from=compwav, mrg_fld=fldname, mrg_type='copy')
+          call addmap_from(compwav, fldname, compocn, mapfillv_bilnr, &
+               hafs_attr%mapnorm, 'unset')
+          call addmrg_to(compocn, fldname, mrg_from=compwav, mrg_fld=fldname, mrg_type='copy')
        end if
     end do
     deallocate(S_flds)
@@ -514,20 +514,20 @@ contains
     ! to wav: 10-m wind components
     ! ---------------------------------------------------------------------
     if (hafs_attr%atm_present .and. hafs_attr%wav_present) then
-      allocate(S_flds(2))
-      S_flds = (/'Sa_u10m', 'Sa_v10m'/)
-      do n = 1,size(S_flds)
-        fldname = trim(S_flds(n))
-        if (fldchk(is_local%wrap%FBexp(compwav), trim(fldname),rc=rc) .and. &
-            fldchk(is_local%wrap%FBImp(compatm,compatm), trim(fldname),rc=rc) &
-           ) then
-           call addmap_from(compatm, trim(fldname), compwav, &
-                mapfillv_bilnr, hafs_attr%mapnorm, hafs_attr%atm2wav_smap)
-           call addmrg_to(compwav, trim(fldname), &
-                mrg_from=compatm, mrg_fld=trim(fldname), mrg_type='copy')
-        end if
-      end do
-      deallocate(S_flds)
+       allocate(S_flds(2))
+       S_flds = (/'Sa_u10m', 'Sa_v10m'/)
+       do n = 1,size(S_flds)
+          fldname = trim(S_flds(n))
+          if (fldchk(is_local%wrap%FBexp(compwav), trim(fldname),rc=rc) .and. &
+               fldchk(is_local%wrap%FBImp(compatm,compatm), trim(fldname),rc=rc) &
+               ) then
+             call addmap_from(compatm, trim(fldname), compwav, &
+                  mapfillv_bilnr, hafs_attr%mapnorm, hafs_attr%atm2wav_smap)
+             call addmrg_to(compwav, trim(fldname), &
+                  mrg_from=compatm, mrg_fld=trim(fldname), mrg_type='copy')
+          end if
+       end do
+       deallocate(S_flds)
     end if
 
     ! ---------------------------------------------------------------------
@@ -574,7 +574,7 @@ contains
 
     ! Query component for name, verbosity, and diagnostic values
     call NUOPC_CompGet(gcomp, name=cname, verbosity=verbosity, &
-      diagnostic=diagnostic, rc=rc)
+         diagnostic=diagnostic, rc=rc)
     if (chkerr(rc,__LINE__,u_FILE_u)) return
 
     !----------------------------------------------------------
@@ -582,21 +582,21 @@ contains
     !----------------------------------------------------------
 
     call NUOPC_CompAttributeGet(gcomp, name='ATM_model', &
-       value=cvalue, isPresent=isPresent, isSet=isSet, rc=rc)
+         value=cvalue, isPresent=isPresent, isSet=isSet, rc=rc)
     if (ChkErr(rc,__LINE__,u_FILE_u)) return
     if (isPresent .and. isSet) then
        if (trim(cvalue) /= 'satm') hafs_attr%atm_present = .true.
     end if
 
     call NUOPC_CompAttributeGet(gcomp, name='OCN_model', &
-       value=cvalue, isPresent=isPresent, isSet=isSet, rc=rc)
+         value=cvalue, isPresent=isPresent, isSet=isSet, rc=rc)
     if (ChkErr(rc,__LINE__,u_FILE_u)) return
     if (isPresent .and. isSet) then
        if (trim(cvalue) /= 'socn') hafs_attr%ocn_present = .true.
     end if
 
     call NUOPC_CompAttributeGet(gcomp, name='WAV_model', &
-       value=cvalue, isPresent=isPresent, isSet=isSet, rc=rc)
+         value=cvalue, isPresent=isPresent, isSet=isSet, rc=rc)
     if (ChkErr(rc,__LINE__,u_FILE_u)) return
     if (isPresent .and. isSet) then
        if (trim(cvalue) /= 'swav') hafs_attr%wav_present = .true.
@@ -607,11 +607,11 @@ contains
     !----------------------------------------------------------
 
     call NUOPC_CompAttributeGet(gcomp, name='normalization', &
-       isPresent=isPresent, rc=rc)
+         isPresent=isPresent, rc=rc)
     if (chkerr(rc,__LINE__,u_FILE_u)) return
     if (isPresent) then
        call NUOPC_CompAttributeGet(gcomp, name='normalization', &
-          value=hafs_attr%mapnorm, rc=rc)
+            value=hafs_attr%mapnorm, rc=rc)
        if (chkerr(rc,__LINE__,u_FILE_u)) return
     end if
 
@@ -621,81 +621,81 @@ contains
 
     ! to atm
     call NUOPC_CompAttributeGet(gcomp, name='ocn2atm_smapname', &
-       isPresent=isPresent, rc=rc)
+         isPresent=isPresent, rc=rc)
     if (chkerr(rc,__LINE__,u_FILE_u)) return
     if (isPresent) then
        call NUOPC_CompAttributeGet(gcomp, name='ocn2atm_smapname', &
-          value=hafs_attr%ocn2atm_smap, rc=rc)
+            value=hafs_attr%ocn2atm_smap, rc=rc)
        if (chkerr(rc,__LINE__,u_FILE_u)) return
     end if
     call NUOPC_CompAttributeGet(gcomp, name='ocn2atm_fmapname', &
-       isPresent=isPresent, rc=rc)
+         isPresent=isPresent, rc=rc)
     if (chkerr(rc,__LINE__,u_FILE_u)) return
     if (isPresent) then
        call NUOPC_CompAttributeGet(gcomp, name='ocn2atm_fmapname', &
-          value=hafs_attr%ocn2atm_fmap, rc=rc)
+            value=hafs_attr%ocn2atm_fmap, rc=rc)
        if (chkerr(rc,__LINE__,u_FILE_u)) return
     end if
 
     ! to ocn
     call NUOPC_CompAttributeGet(gcomp, name='atm2ocn_fmapname', &
-       isPresent=isPresent, rc=rc)
+         isPresent=isPresent, rc=rc)
     if (chkerr(rc,__LINE__,u_FILE_u)) return
     if (isPresent) then
        call NUOPC_CompAttributeGet(gcomp, name='atm2ocn_fmapname', &
-          value=hafs_attr%atm2ocn_fmap, rc=rc)
+            value=hafs_attr%atm2ocn_fmap, rc=rc)
        if (chkerr(rc,__LINE__,u_FILE_u)) return
     end if
     call NUOPC_CompAttributeGet(gcomp, name='atm2ocn_smapname', &
-       isPresent=isPresent, rc=rc)
+         isPresent=isPresent, rc=rc)
     if (chkerr(rc,__LINE__,u_FILE_u)) return
     if (isPresent) then
-    call NUOPC_CompAttributeGet(gcomp, name='atm2ocn_smapname', &
-       value=hafs_attr%atm2ocn_smap, rc=rc)
+       call NUOPC_CompAttributeGet(gcomp, name='atm2ocn_smapname', &
+            value=hafs_attr%atm2ocn_smap, rc=rc)
        if (chkerr(rc,__LINE__,u_FILE_u)) return
     end if
     call NUOPC_CompAttributeGet(gcomp, name='atm2ocn_vmapname', &
-       isPresent=isPresent, rc=rc)
+         isPresent=isPresent, rc=rc)
     if (chkerr(rc,__LINE__,u_FILE_u)) return
     if (isPresent) then
        call NUOPC_CompAttributeGet(gcomp, name='atm2ocn_vmapname', &
-          value=hafs_attr%atm2ocn_vmap, rc=rc)
+            value=hafs_attr%atm2ocn_vmap, rc=rc)
        if (chkerr(rc,__LINE__,u_FILE_u)) return
     end if
 
     ! to wav
     call NUOPC_CompAttributeGet(gcomp, name='atm2wav_smapname', &
-       isPresent=isPresent, rc=rc)
+         isPresent=isPresent, rc=rc)
     if (chkerr(rc,__LINE__,u_FILE_u)) return
     if (isPresent) then
        call NUOPC_CompAttributeGet(gcomp, name='atm2wav_smapname', &
-          value=hafs_attr%atm2wav_smap, rc=rc)
+            value=hafs_attr%atm2wav_smap, rc=rc)
        if (chkerr(rc,__LINE__,u_FILE_u)) return
     end if
     call NUOPC_CompAttributeGet(gcomp, name='ocn2wav_smapname', &
-       isPresent=isPresent, rc=rc)
+         isPresent=isPresent, rc=rc)
     if (chkerr(rc,__LINE__,u_FILE_u)) return
     if (isPresent) then
        call NUOPC_CompAttributeGet(gcomp, name='ocn2wav_smapname', &
-          value=hafs_attr%ocn2wav_smap, rc=rc)
+            value=hafs_attr%ocn2wav_smap, rc=rc)
        if (chkerr(rc,__LINE__,u_FILE_u)) return
     end if
 
     ! from wav
     call NUOPC_CompAttributeGet(gcomp, name='wav2atm_smapname', &
-       isPresent=isPresent, rc=rc)
+         isPresent=isPresent, rc=rc)
     if (chkerr(rc,__LINE__,u_FILE_u)) return
     if (isPresent) then
        call NUOPC_CompAttributeGet(gcomp, name='wav2atm_smapname', &
-          value=hafs_attr%wav2atm_smap, rc=rc)
+            value=hafs_attr%wav2atm_smap, rc=rc)
        if (chkerr(rc,__LINE__,u_FILE_u)) return
     end if
     call NUOPC_CompAttributeGet(gcomp, name='wav2ocn_smapname', &
-       isPresent=isPresent, rc=rc)
+         isPresent=isPresent, rc=rc)
     if (chkerr(rc,__LINE__,u_FILE_u)) return
     if (isPresent) then
        call NUOPC_CompAttributeGet(gcomp, name='wav2ocn_smapname', &
-          value=hafs_attr%wav2ocn_smap, rc=rc)
+            value=hafs_attr%wav2ocn_smap, rc=rc)
        if (chkerr(rc,__LINE__,u_FILE_u)) return
     end if
 
@@ -703,22 +703,22 @@ contains
     if (btest(verbosity,16)) then
        write(cvalue,"(I0)") verbosity
        call ESMF_LogWrite(trim(subname)//': Verbosity        = '// &
-          trim(cvalue), ESMF_LOGMSG_INFO)
+            trim(cvalue), ESMF_LOGMSG_INFO)
        write(cvalue,"(I0)") diagnostic
        call ESMF_LogWrite(trim(subname)//': Diagnostic       = '// &
-          trim(cvalue), ESMF_LOGMSG_INFO)
+            trim(cvalue), ESMF_LOGMSG_INFO)
        call ESMF_LogWrite(trim(subname)//': normalization    = '// &
-          trim(hafs_attr%mapnorm), ESMF_LOGMSG_INFO)
+            trim(hafs_attr%mapnorm), ESMF_LOGMSG_INFO)
        call ESMF_LogWrite(trim(subname)//': ocn2atm_smapname = '// &
-          trim(hafs_attr%ocn2atm_smap), ESMF_LOGMSG_INFO)
+            trim(hafs_attr%ocn2atm_smap), ESMF_LOGMSG_INFO)
        call ESMF_LogWrite(trim(subname)//': ocn2atm_fmapname = '// &
-          trim(hafs_attr%ocn2atm_fmap), ESMF_LOGMSG_INFO)
+            trim(hafs_attr%ocn2atm_fmap), ESMF_LOGMSG_INFO)
        call ESMF_LogWrite(trim(subname)//': atm2ocn_fmapname = '// &
-          trim(hafs_attr%atm2ocn_fmap), ESMF_LOGMSG_INFO)
+            trim(hafs_attr%atm2ocn_fmap), ESMF_LOGMSG_INFO)
        call ESMF_LogWrite(trim(subname)//': atm2ocn_smapname = '// &
-          trim(hafs_attr%atm2ocn_smap), ESMF_LOGMSG_INFO)
+            trim(hafs_attr%atm2ocn_smap), ESMF_LOGMSG_INFO)
        call ESMF_LogWrite(trim(subname)//': atm2ocn_vmapname = '// &
-          trim(hafs_attr%atm2ocn_vmap), ESMF_LOGMSG_INFO)
+            trim(hafs_attr%atm2ocn_vmap), ESMF_LOGMSG_INFO)
     endif
 
     call ESMF_LogWrite(trim(subname)//": done", ESMF_LOGMSG_INFO)
