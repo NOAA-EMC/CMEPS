@@ -358,7 +358,7 @@ contains
 #ifdef CESMCOUPLED
     use shr_flux_mod    , only : shr_flux_adjust_constants
 #else
-    use flux_atmocn_mod , only : flux_adjust_constants
+    use ufs_flux_mod    , only : flux_adjust_constants
 #endif
 
     !-----------------------------------------------------------------------
@@ -991,11 +991,12 @@ contains
     use med_map_mod    , only : med_map_routehandles_init
     use med_methods_mod, only : FB_fldchk => med_methods_FB_fldchk
     use med_methods_mod, only : FB_diagnose  => med_methods_FB_diagnose
-#ifdef CESMCOUPLED
+!#ifdef CESMCOUPLED
+!    use flux_atmocn_driver_mod, only : flux_atmocn_driver
+!#else
     use flux_atmocn_driver_mod, only : flux_atmocn_driver
-#else
-    use flux_atmocn_mod, only : flux_atmocn
-#endif
+!#endif
+
 #ifdef UFS_AOFLUX
     use flux_atmocn_ccpp_mod, only : flux_atmocn_ccpp
 #endif
@@ -1056,7 +1057,7 @@ contains
     ! Note pbot, tbot and shum have already been mapped or are available on the aoflux grid
     if (compute_atm_thbot) then
        do n = 1,aoflux_in%lsize
-          if (aoflux_in%mask(n) /= 0.0_r8) then
+          if (aoflux_in%mask(n) /= 0 ) then
              aoflux_in%thbot(n) = aoflux_in%tbot(n)*((p0/aoflux_in%pbot(n))**rcp)
           end if
        end do
@@ -1066,18 +1067,18 @@ contains
           (trim(coupling_mode) == 'ufs.frac.aoflux')) then
           ! Add limiting factor to humidity to be consistent with UFS aoflux calculation
           do n = 1,aoflux_in%lsize
-             if (aoflux_in%mask(n) /= 0.0_r8) then
+             if (aoflux_in%mask(n) /= 0) then
                 aoflux_in%shum(n) = max(aoflux_in%shum(n), qmin)
              end if
           end do
           ! Use pbot as psfc for the initial pass since psfc provided by UFS atm is zero
-          if (maxval(aoflux_in%psfc, mask=(aoflux_in%mask/= 0.0_r8)) < 100.0_r8) then
+          if (maxval(aoflux_in%psfc, mask=(aoflux_in%mask /= 0)) < 100.0_r8) then
              aoflux_in%psfc(:) = aoflux_in%pbot(:)
              call ESMF_LogWrite(trim(subname)//" : using pbot as psfc for initial pass!", ESMF_LOGMSG_INFO)
           end if
        end if
        do n = 1,aoflux_in%lsize
-          if (aoflux_in%mask(n) /= 0.0_r8) then
+          if (aoflux_in%mask(n) /= 0) then
              aoflux_in%dens(n) = aoflux_in%pbot(n)/(rdair*(1.0_r8 + 0.608_r8*aoflux_in%shum(n))*aoflux_in%tbot(n))
           end if
        end do
@@ -1115,15 +1116,27 @@ contains
             missval=0.0_r8)
      else
 #endif
-       call flux_atmocn (logunit=logunit, &
-            nMax=aoflux_in%lsize, mask=aoflux_in%mask, &
-            zbot=aoflux_in%zbot, ubot=aoflux_in%ubot, vbot=aoflux_in%vbot, thbot=aoflux_in%thbot, qbot=aoflux_in%shum, &
-            rbot=aoflux_in%dens, tbot=aoflux_in%tbot, us=aoflux_in%uocn, vs=aoflux_in%vocn, ts=aoflux_in%tocn, &
-            ocn_surface_flux_scheme=ocn_surface_flux_scheme, &
-            sen=aoflux_out%sen, lat=aoflux_out%lat, lwup=aoflux_out%lwup, evap=aoflux_out%evap, &
-            taux=aoflux_out%taux, tauy=aoflux_out%tauy, tref=aoflux_out%tref, qref=aoflux_out%qref, &
-            duu10n=aoflux_out%duu10n, &
-            missval=0.0_r8)
+        call flux_atmocn_driver(ocn_surface_flux_scheme,                   &
+             gcomp=gcomp, garea=aoflux_in%garea, maintask=maintask,                                &
+             logunit=logunit, nMax=aoflux_in%lsize, mask=aoflux_in%mask,                           &
+             zbot=aoflux_in%zbot, ubot=aoflux_in%ubot, vbot=aoflux_in%vbot, qbot=aoflux_in%shum,   &
+             rbot=aoflux_in%dens, tbot=aoflux_in%tbot, thbot=aoflux_in%thbot, pbot=aoflux_in%pbot, &
+             ts=aoflux_in%tocn, us=aoflux_in%uocn, vs=aoflux_in%vocn,                              &
+             usfc=aoflux_in%usfc, vsfc=aoflux_in%vsfc, psfc=aoflux_in%psfc, lwdn=aoflux_in%lwdn,   &
+             sen=aoflux_out%sen, lat=aoflux_out%lat, lwup=aoflux_out%lwup,                         &
+             taux=aoflux_out%taux, tauy=aoflux_out%tauy, evap=aoflux_out%evap,                     &
+             tref=aoflux_out%tref, qref=aoflux_out%qref, duu10n=aoflux_out%duu10n,                 &
+             missval=0.0_r8)
+
+       ! call flux_atmocn (logunit=logunit, &
+       !      nMax=aoflux_in%lsize, mask=aoflux_in%mask, &
+       !      zbot=aoflux_in%zbot, ubot=aoflux_in%ubot, vbot=aoflux_in%vbot, thbot=aoflux_in%thbot, qbot=aoflux_in%shum, &
+       !      rbot=aoflux_in%dens, tbot=aoflux_in%tbot, us=aoflux_in%uocn, vs=aoflux_in%vocn, ts=aoflux_in%tocn, &
+       !      ocn_surface_flux_scheme=ocn_surface_flux_scheme, &
+       !      sen=aoflux_out%sen, lat=aoflux_out%lat, lwup=aoflux_out%lwup, evap=aoflux_out%evap, &
+       !      taux=aoflux_out%taux, tauy=aoflux_out%tauy, tref=aoflux_out%tref, qref=aoflux_out%qref, &
+       !      duu10n=aoflux_out%duu10n, &
+       !      missval=0.0_r8)
 #ifdef UFS_AOFLUX
      end if
 #endif
