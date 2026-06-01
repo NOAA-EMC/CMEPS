@@ -1,4 +1,5 @@
 module flux_atmocn_ccpp_mod
+
   use ESMF,            only : ESMF_GridComp
   use med_kind_mod,    only : R8=>SHR_KIND_R8
 #ifdef CMEPS_AOFLUX
@@ -57,8 +58,6 @@ contains
        pbot, tbot, qbot, zbot, ubot, vbot, rbot, ts, usfc, vsfc,           &
        psfc, lwdn, spval, sen, lat, lwup, evap, taux, tauy, tref, qref,    &
        duu10n, ustar_sv, re_sv, ssq_sv)
-
-    implicit none
 
     !--- input arguments --------------------------------
     type(ESMF_GridComp), intent(in) :: gcomp       ! gridded component
@@ -547,6 +546,9 @@ contains
 
   end function string_countChar
 #else
+
+  implicit none
+
   private ! default private
 
   public :: flux_atmocn_ccpp ! computes atm/ocn fluxes

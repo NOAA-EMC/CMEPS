@@ -35,8 +35,6 @@ contains
        zbot, ubot, vbot, qbot, rbot, tbot, ts, us, vs, thbot, spval, &
        sen, lat, lwup, taux, tauy, evap, tref, qref, duu10n)
 
-    implicit none
-
     !--- input arguments --------------------------------
     integer    ,intent(in) :: logunit
     integer(IN),intent(in) ::       nMax  ! data vector length

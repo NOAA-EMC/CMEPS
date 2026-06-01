@@ -22,8 +22,6 @@ contains
        sen, lat, lwup, taux, tauy, evap, tref, qref, duu10n, &
        missval, ustar_sv, re_sv, ssq_sv)
 
-    implicit none
-
     !--- input arguments --------------------------------
     integer,             intent(in) :: ocn_surface_flux_scheme  ! flux scheme
     type(ESMF_GridComp), intent(in) :: gcomp       ! gridded component
