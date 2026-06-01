@@ -100,7 +100,6 @@ contains
     type(ESMF_TimeInterval) :: timeStep
     type(InternalState)     :: is_local
     integer                 :: n, rc
-    real(r8)                :: spval
     logical                 :: isPresent, isSet
     character(len=cs)       :: cvalue, cname
     logical, save           :: first_call = .true.

@@ -86,13 +86,12 @@ contains
            zbot, ubot, vbot, qbot, rbot, tbot, ts, us, vs, thbot, spval, &
            sen, lat, lwup, taux, tauy, evap, tref, qref, duu10n)
 
-     else if  (ocn_surface_flux_scheme == ocn_flux_scheme_ccpp) then
+     else if (ocn_surface_flux_scheme == ocn_flux_scheme_ccpp) then
         call flux_atmocn_ccpp(gcomp, garea, maintask, logunit, nMax, mask,    &
-             pbot, tbot, qbot, zbot, ubot, vbot, vbot, rbot, ts, ufsc, vsfc,  &
+             pbot, tbot, qbot, zbot, ubot, vbot, rbot, ts, usfc, vsfc,        &
              psfc, lwdn, spval, sen, lat, lwup, evap, taux, tauy, tref, qref, &
              duu10n, ustar_sv, re_sv, ssq_sv)
      endif
-    end if
 
   end subroutine flux_atmocn_driver
 end module flux_atmocn_driver_mod

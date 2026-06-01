@@ -79,22 +79,22 @@ module ufs_const_mod
 
 contains
 
-! !-----------------------------------------------------------------------------
+!-----------------------------------------------------------------------------
 
-!   elemental logical function shr_const_isspval(rval)
-! !$omp declare simd(shr_const_isspval)
+  elemental logical function shr_const_isspval(rval)
+!$omp declare simd(shr_const_isspval)
 
-!      real(r8), intent(in) :: rval
+     real(r8), intent(in) :: rval
 
-!      if (rval > SHR_CONST_SPVAL_TOLMIN .and. &
-!          rval < SHR_CONST_SPVAL_TOLMAX) then
-!         shr_const_isspval = .true.
-!      else
-!         shr_const_isspval = .false.
-!      endif
+     if (rval > SHR_CONST_SPVAL_TOLMIN .and. &
+         rval < SHR_CONST_SPVAL_TOLMAX) then
+        shr_const_isspval = .true.
+     else
+        shr_const_isspval = .false.
+     endif
 
-!   end function shr_const_isspval
+  end function shr_const_isspval
 
-! !-----------------------------------------------------------------------------
+!-----------------------------------------------------------------------------
 
 end module ufs_const_mod
