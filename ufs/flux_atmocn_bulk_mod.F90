@@ -31,7 +31,7 @@ module flux_atmocn_bulk_mod
   public :: flux_atmocn_bulk
 
 contains
-  subroutine flux_atmOcn_bulk(logunit, nMax, mask,                   &
+  subroutine flux_atmocn_bulk(logunit, nMax, mask,                   &
        zbot, ubot, vbot, qbot, rbot, tbot, ts, us, vs, thbot, spval, &
        sen, lat, lwup, taux, tauy, evap, tref, qref, duu10n)
 
@@ -119,11 +119,6 @@ contains
     cdn(Umps)  =   0.0027_R8 / Umps + 0.000142_R8 + 0.0000764_R8 * Umps
     psimhu(xd) = log((1.0_R8+xd*(2.0_R8+xd))*(1.0_R8+xd*xd)/8.0_R8) - 2.0_R8*atan(xd) + 1.571_R8
     psixhu(xd) = 2.0_R8 * log((1.0_R8 + xd*xd)/2.0_R8)
-
-    !--- formats ----------------------------------------
-    character(*),parameter :: subName = '(shr_flux_atmOcn) '
-    character(*),parameter ::   F00 = "('(shr_flux_atmOcn) ',4a)"
-    ! --------------------------------------------------------------------------
 
     u10n = spval
     rh = spval
@@ -258,5 +253,5 @@ contains
 
        endif
     enddo
-  end subroutine flux_atmOcn_bulk
+  end subroutine flux_atmocn_bulk
 end module flux_atmocn_bulk_mod

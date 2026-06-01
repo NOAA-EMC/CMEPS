@@ -1103,20 +1103,20 @@ contains
          ustar_sv=aoflux_out%ustar, re_sv=aoflux_out%re, ssq_sv=aoflux_out%ssq, missval=0.0_r8)
 
 #else
-#ifdef UFS_AOFLUX
-     if (trim(aoflux_code) == 'ccpp') then
-       call flux_atmocn_ccpp(gcomp=gcomp, maintask=maintask, logunit=logunit, &
-            nMax=aoflux_in%lsize, psfc=aoflux_in%psfc, &
-            pbot=aoflux_in%pbot, tbot=aoflux_in%tbot, qbot=aoflux_in%shum, lwdn=aoflux_in%lwdn, &
-            zbot=aoflux_in%zbot, garea=aoflux_in%garea, ubot=aoflux_in%ubot, usfc=aoflux_in%usfc, vbot=aoflux_in%vbot, &
-            vsfc=aoflux_in%vsfc, rbot=aoflux_in%dens, ts=aoflux_in%tocn, mask=aoflux_in%mask, &
-            sen=aoflux_out%sen, lat=aoflux_out%lat, lwup=aoflux_out%lwup, evp=aoflux_out%evap, &
-            taux=aoflux_out%taux, tauy=aoflux_out%tauy, tref=aoflux_out%tref, qref=aoflux_out%qref, &
-            duu10n=aoflux_out%duu10n, ustar_sv=aoflux_out%ustar, re_sv=aoflux_out%re, ssq_sv=aoflux_out%ssq, &
-            missval=0.0_r8)
-     else
-#endif
-        call flux_atmocn_driver(ocn_surface_flux_scheme,                   &
+! #ifdef UFS_AOFLUX
+!      if (trim(aoflux_code) == 'ccpp') then
+!        call flux_atmocn_ccpp(gcomp=gcomp, maintask=maintask, logunit=logunit, &
+!             nMax=aoflux_in%lsize, psfc=aoflux_in%psfc, &
+!             pbot=aoflux_in%pbot, tbot=aoflux_in%tbot, qbot=aoflux_in%shum, lwdn=aoflux_in%lwdn, &
+!             zbot=aoflux_in%zbot, garea=aoflux_in%garea, ubot=aoflux_in%ubot, usfc=aoflux_in%usfc, vbot=aoflux_in%vbot, &
+!             vsfc=aoflux_in%vsfc, rbot=aoflux_in%dens, ts=aoflux_in%tocn, mask=aoflux_in%mask, &
+!             sen=aoflux_out%sen, lat=aoflux_out%lat, lwup=aoflux_out%lwup, evp=aoflux_out%evap, &
+!             taux=aoflux_out%taux, tauy=aoflux_out%tauy, tref=aoflux_out%tref, qref=aoflux_out%qref, &
+!             duu10n=aoflux_out%duu10n, ustar_sv=aoflux_out%ustar, re_sv=aoflux_out%re, ssq_sv=aoflux_out%ssq, &
+!             missval=0.0_r8)
+!      else
+! #endif
+        call flux_atmocn_driver(ocn_surface_flux_scheme,                                           &
              gcomp=gcomp, garea=aoflux_in%garea, maintask=maintask,                                &
              logunit=logunit, nMax=aoflux_in%lsize, mask=aoflux_in%mask,                           &
              zbot=aoflux_in%zbot, ubot=aoflux_in%ubot, vbot=aoflux_in%vbot, qbot=aoflux_in%shum,   &
@@ -1126,7 +1126,7 @@ contains
              sen=aoflux_out%sen, lat=aoflux_out%lat, lwup=aoflux_out%lwup,                         &
              taux=aoflux_out%taux, tauy=aoflux_out%tauy, evap=aoflux_out%evap,                     &
              tref=aoflux_out%tref, qref=aoflux_out%qref, duu10n=aoflux_out%duu10n,                 &
-             missval=0.0_r8)
+             missval=0.0_r8, ustar_sv=aoflux_out%ustar, re_sv=aoflux_out%re, ssq_sv=aoflux_out%ssq)
 
        ! call flux_atmocn (logunit=logunit, &
        !      nMax=aoflux_in%lsize, mask=aoflux_in%mask, &
@@ -1137,9 +1137,9 @@ contains
        !      taux=aoflux_out%taux, tauy=aoflux_out%tauy, tref=aoflux_out%tref, qref=aoflux_out%qref, &
        !      duu10n=aoflux_out%duu10n, &
        !      missval=0.0_r8)
-#ifdef UFS_AOFLUX
-     end if
-#endif
+!#ifdef UFS_AOFLUX
+!     end if
+!#endif
 
 #endif
 
