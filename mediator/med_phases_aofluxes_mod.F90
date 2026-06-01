@@ -1105,7 +1105,8 @@ contains
          sen=aoflux_out%sen, lat=aoflux_out%lat, lwup=aoflux_out%lwup,                         &
          taux=aoflux_out%taux, tauy=aoflux_out%tauy, evap=aoflux_out%evap,                     &
          tref=aoflux_out%tref, qref=aoflux_out%qref, duu10n=aoflux_out%duu10n,                 &
-         missval=0.0_r8, ustar_sv=aoflux_out%ustar, re_sv=aoflux_out%re, ssq_sv=aoflux_out%ssq)
+         missval=0.0_r8, ustar_sv=aoflux_out%ustar, re_sv=aoflux_out%re, ssq_sv=aoflux_out%ssq, rc=rc)
+    if (chkerr(rc,__LINE__,u_FILE_u)) return
 #endif
 
     do n = 1,aoflux_in%lsize

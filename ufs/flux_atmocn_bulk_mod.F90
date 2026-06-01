@@ -18,7 +18,7 @@ module flux_atmocn_bulk_mod
   !   o The saturation humidity of air at T(K): qsat(T)  (kg/m^3)
   !-------------------------------------------------------------------------------
 
-  use ESMF,         only: ESMF_FINALIZE, ESMF_END_ABORT
+  use ESMF,         only: ESMF_FAILURE, ESMF_SUCCESS
   use ufs_kind_mod, only: R8=>SHR_KIND_R8, IN=>SHR_KIND_IN
   use ufs_flux_mod, only: alpha, maxscl, td0
   use ufs_flux_mod, only: flux_con_tol, flux_con_max_iter
@@ -33,39 +33,40 @@ module flux_atmocn_bulk_mod
 contains
   subroutine flux_atmocn_bulk(logunit, nMax, mask,                   &
        zbot, ubot, vbot, qbot, rbot, tbot, ts, us, vs, thbot, spval, &
-       sen, lat, lwup, taux, tauy, evap, tref, qref, duu10n)
+       sen, lat, lwup, taux, tauy, evap, tref, qref, duu10n, rc)
 
     !--- input arguments --------------------------------
-    integer    ,intent(in) :: logunit
-    integer(IN),intent(in) ::       nMax  ! data vector length
-    integer(IN),intent(in) :: mask (nMax) ! ocn domain mask       0 <=> out of domain
-    real(R8)   ,intent(in) :: zbot (nMax) ! atm level height           (m)
-    real(R8)   ,intent(in) :: ubot (nMax) ! atm u wind               (m/s)
-    real(R8)   ,intent(in) :: vbot (nMax) ! atm v wind               (m/s)
-    real(R8)   ,intent(in) :: qbot (nMax) ! atm specific humidity  (kg/kg)
-    real(R8)   ,intent(in) :: rbot (nMax) ! atm air density       (kg/m^3)
-    real(R8)   ,intent(in) :: tbot (nMax) ! atm T                      (K)
-    real(R8)   ,intent(in) :: ts   (nMax) ! ocn temperature            (K)
-    real(R8)   ,intent(in) :: us   (nMax) ! ocn u-velocity           (m/s)
-    real(R8)   ,intent(in) :: vs   (nMax) ! ocn v-velocity           (m/s)
-    real(R8)   ,intent(in) :: thbot(nMax) ! atm potential T            (K)
-    real(R8),   intent(in) :: spval       ! masked value
+    integer,     intent(in) :: logunit
+    integer(IN), intent(in) ::       nMax  ! data vector length
+    integer(IN), intent(in) :: mask (nMax) ! ocn domain mask       0 <=> out of domain
+    real(R8),    intent(in) :: zbot (nMax) ! atm level height           (m)
+    real(R8),    intent(in) :: ubot (nMax) ! atm u wind               (m/s)
+    real(R8),    intent(in) :: vbot (nMax) ! atm v wind               (m/s)
+    real(R8),    intent(in) :: qbot (nMax) ! atm specific humidity  (kg/kg)
+    real(R8),    intent(in) :: rbot (nMax) ! atm air density       (kg/m^3)
+    real(R8),    intent(in) :: tbot (nMax) ! atm T                      (K)
+    real(R8),    intent(in) :: ts   (nMax) ! ocn temperature            (K)
+    real(R8),    intent(in) :: us   (nMax) ! ocn u-velocity           (m/s)
+    real(R8),    intent(in) :: vs   (nMax) ! ocn v-velocity           (m/s)
+    real(R8),    intent(in) :: thbot(nMax) ! atm potential T            (K)
+    real(R8),    intent(in) :: spval       ! masked value
 
     !--- output arguments -------------------------------
-    real(R8),intent(out)  ::  sen  (nMax)    ! heat flux: sensible      (W/m^2)
-    real(R8),intent(out)  ::  lat  (nMax)    ! heat flux: latent        (W/m^2)
-    real(R8),intent(out)  ::  lwup (nMax)    ! heat flux: lw upward     (W/m^2)
-    real(R8),intent(out)  ::  taux (nMax)    ! surface stress, zonal        (N)
-    real(R8),intent(out)  ::  tauy (nMax)    ! surface stress, maridional   (N)
-    real(R8),intent(out)  ::  evap (nMax)    ! water flux: evap    ((kg/s)/m^2)
-    real(R8),intent(out)  ::  tref (nMax)    ! diag:  2m ref height T       (K)
-    real(R8),intent(out)  ::  qref (nMax)    ! diag:  2m ref humidity   (kg/kg)
-    real(R8),intent(out)  :: duu10n(nMax)    ! diag: 10m wind speed squared (m/s)^2
+    real(R8),    intent(out) ::  sen  (nMax)    ! heat flux: sensible      (W/m^2)
+    real(R8),    intent(out) ::  lat  (nMax)    ! heat flux: latent        (W/m^2)
+    real(R8),    intent(out) ::  lwup (nMax)    ! heat flux: lw upward     (W/m^2)
+    real(R8),    intent(out) ::  taux (nMax)    ! surface stress, zonal        (N)
+    real(R8),    intent(out) ::  tauy (nMax)    ! surface stress, maridional   (N)
+    real(R8),    intent(out) ::  evap (nMax)    ! water flux: evap    ((kg/s)/m^2)
+    real(R8),    intent(out) ::  tref (nMax)    ! diag:  2m ref height T       (K)
+    real(R8),    intent(out) ::  qref (nMax)    ! diag:  2m ref humidity   (kg/kg)
+    real(R8),    intent(out) :: duu10n(nMax)    ! diag: 10m wind speed squared (m/s)^2
+    integer,     intent(out) :: rc
 
     !--- local constants --------------------------------
-    real(R8),parameter :: umin  =  0.5_R8 ! minimum wind speed       (m/s)
-    real(R8),parameter :: zref  = 10.0_R8 ! reference height           (m)
-    real(R8),parameter :: ztref =  2.0_R8 ! reference height for air T (m)
+    real(R8), parameter :: umin  =  0.5_R8 ! minimum wind speed       (m/s)
+    real(R8), parameter :: zref  = 10.0_R8 ! reference height           (m)
+    real(R8), parameter :: ztref =  2.0_R8 ! reference height for air T (m)
 
     !--- local variables --------------------------------
     integer     :: n      ! vector loop index
@@ -111,6 +112,8 @@ contains
     !--- for cold air outbreak calc --------------------------------
     real(R8)    :: tdiff(nMax)               ! tbot - ts
     real(R8)    :: vscl
+
+    rc = ESMF_SUCCESS
 
     qsat(Tk)   = 640380.0_R8 / exp(5107.4_R8/Tk)
     ! Large and Pond
@@ -198,8 +201,9 @@ contains
              qstar = re * delq
           enddo
           if (iter < 1) then
-             write(logunit,*) ustar,ustar_prev,flux_con_tol,flux_con_max_iter
-             call ESMF_Finalize(endflag=ESMF_END_ABORT)
+             write(logunit,*) 'iter<1 ',ustar,ustar_prev,flux_con_tol,flux_con_max_iter
+             rc = ESMF_FAILURE
+             return
           end if
 
           !------------------------------------------------------------
