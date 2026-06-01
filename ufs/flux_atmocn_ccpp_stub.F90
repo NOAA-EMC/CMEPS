@@ -53,6 +53,20 @@ contains
     real(r8), intent(out) :: ssq_sv(nMax)   ! diag: sea surface humidity (kg/kg)
     integer,  intent(out) :: rc             ! return code
 
+    ! provide explicit values for intent(out)
+    sen = spval
+    lat = spval
+    lwup = spval
+    evap = spval
+    taux = spval
+    tauy = spval
+    tref = spval
+    qref = spval
+    duu10n = spval
+    ustar_sv = spval
+    re_sv = spval
+    ssq_sv = spval
+
     if (maintask) then
        write(logunit,*) 'ERROR: ocn_surface_flux_scheme=1 and CMEPS_AOFLUX=OFF '
     end if

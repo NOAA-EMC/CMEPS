@@ -113,8 +113,6 @@ contains
     real(R8)    :: tdiff(nMax)               ! tbot - ts
     real(R8)    :: vscl
 
-    rc = ESMF_SUCCESS
-
     qsat(Tk)   = 640380.0_R8 / exp(5107.4_R8/Tk)
     ! Large and Pond
     cdn(Umps)  =   0.0027_R8 / Umps + 0.000142_R8 + 0.0000764_R8 * Umps
@@ -125,6 +123,8 @@ contains
     rh = spval
     psixh = spval
     hol=spval
+
+    rc = ESMF_SUCCESS
 
     !--- for cold air outbreak calc --------------------------------
     tdiff= tbot - ts
