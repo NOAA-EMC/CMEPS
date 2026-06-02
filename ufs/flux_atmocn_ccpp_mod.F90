@@ -1,8 +1,7 @@
 module flux_atmocn_ccpp_mod
 
-  use ESMF,            only : ESMF_GridComp
   use ESMF,            only : operator(-), operator(/)
-  use ESMF,            only : ESMF_Time, ESMF_SUCCESS, ESMF_FAILURE
+  use ESMF,            only : ESMF_GridComp, ESMF_Time, ESMF_SUCCESS, ESMF_FAILURE
   use ESMF,            only : ESMF_Clock, ESMF_TimeInterval, ESMF_ClockGet
   use ESMF,            only : ESMF_GridCompGetInternalState, ESMF_LOGMSG_INFO
   use ESMF,            only : ESMF_LogWrite
@@ -22,7 +21,8 @@ module flux_atmocn_ccpp_mod
 
   use ufs_const_mod
   use ufs_io_mod,      only : read_initial, read_restart, write_restart
-  use med_kind_mod,    only : R8=>SHR_KIND_R8, CS=>SHR_KIND_CS, CL=>SHR_KIND_CL
+  use med_kind_mod,    only : R8=>SHR_KIND_R8, CS=>SHR_KIND_CS
+  use med_kind_mod,    only : CL=>SHR_KIND_CL
   use med_utils_mod,   only : chkerr => med_utils_chkerr
   use med_internalstate_mod, only : aoflux_ccpp_suite, logunit
   use med_internalstate_mod, only : InternalState, maintask
