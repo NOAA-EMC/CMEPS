@@ -495,7 +495,7 @@ contains
        if (ChkErr(rc,__LINE__,u_FILE_u)) return
 #ifndef CESMCOUPLED
        if (maintask) then
-         call log_restart_fh(nextTime, startTime, 'cmeps', rc=rc)
+         call log_restart_fh(nextTime, startTime, 'cmeps', output_dir=restart_dir, rc=rc)
          if (ChkErr(rc,__LINE__,u_FILE_u)) return
        endif
 #endif
