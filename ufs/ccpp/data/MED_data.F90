@@ -16,7 +16,6 @@ module MED_data
   use MED_typedefs, only: MED_grid_type
   use MED_typedefs, only: MED_sfcprop_type  
   use MED_typedefs, only: MED_diag_type
-  use ccpp_types,   only: ccpp_t
 
   implicit none
 
@@ -38,7 +37,6 @@ module MED_data
   end type physics_type
 
   type(physics_type), save, target :: physics
-  type(ccpp_t),       save, target :: cdata
 
 contains
 

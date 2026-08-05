@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<suite name="FV3_sfc_ocean" version="1">
+<suite name="FV3_sfc_ocean" version="1.0">
   <group name="physics">
     <subcycle loop="1">
       <scheme>GFS_surface_composites_pre</scheme>

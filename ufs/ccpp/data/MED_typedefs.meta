@@ -1,3 +1,15 @@
+########################################################################
+[ccpp-table-properties]
+  name = MED_typedefs
+  type = host
+  dependencies_path = ../../../../../UFSATM/ccpp/physics/physics/hooks
+  dependencies = machine.F
+
+[ccpp-arg-table]
+  name = MED_typedefs
+  type = host
+
+########################################################################
 [ccpp-table-properties]
   name = MED_init_type
   type = ddt
@@ -7,12 +19,6 @@
   name = MED_init_type
   type = ddt
 [im]
-  standard_name = horizontal_loop_extent
-  long_name = horizontal loop extent
-  units = count
-  dimensions = ()
-  type = integer
-[nCol]
   standard_name = horizontal_dimension
   long_name = horizontal dimension
   units = count
@@ -1405,131 +1411,3 @@
   dimensions = (horizontal_dimension)
   type = real
   kind = kind_phys
-
-########################################################################
-[ccpp-table-properties]
-  name = MED_typedefs
-  type = module
-  dependencies_path = ../../../../../UFSATM/ccpp/physics/physics/hooks
-  dependencies = machine.F,physcons.F90
-
-[ccpp-arg-table]
-  name = MED_typedefs
-  type = module
-[MED_init_type]
-  standard_name = MED_init_type
-  long_name = definition of type MED_init_type
-  units = DDT
-  dimensions = ()
-  type = MED_init_type
-[MED_statein_type]
-  standard_name = MED_statein_type
-  long_name = definition of type MED_statein_type
-  units = DDT
-  dimensions = ()
-  type = MED_statein_type
-[MED_interstitial_type]
-  standard_name = MED_interstitial_type
-  long_name = definition of type MED_interstitial_type
-  units = DDT
-  dimensions = ()
-  type = MED_interstitial_type
-[MED_control_type]
-  standard_name = MED_control_type
-  long_name = definition of type MED_control_type
-  units = DDT
-  dimensions = ()
-  type = MED_control_type
-[MED_coupling_type]
-  standard_name = MED_coupling_type
-  long_name = definition of type MED_coupling_type
-  units = DDT
-  dimensions = ()
-  type = MED_coupling_type
-[MED_grid_type]
-  standard_name = MED_grid_type
-  long_name = definition of type MED_grid_type
-  units = DDT
-  dimensions = ()
-  type = MED_grid_type
-[MED_sfcprop_type]
-  standard_name = MED_sfcprop_type
-  long_name = definition of type MED_sfcprop_type
-  units = DDT
-  dimensions = ()
-  type = MED_sfcprop_type
-[MED_diag_type]
-  standard_name = MED_diag_type
-  long_name = definition of type MED_diag_type
-  units = DDT
-  dimensions = ()
-  type = MED_diag_type
-[con_hvap]
-  standard_name = latent_heat_of_vaporization_of_water_at_0C
-  long_name = latent heat of evaporation/sublimation
-  units = J kg-1
-  dimensions = ()
-  type = real
-  kind = kind_phys
-[con_cp]
-  standard_name = specific_heat_of_dry_air_at_constant_pressure
-  long_name = specific heat of dry air at constant pressure
-  units = J kg-1 K-1
-  dimensions = ()
-  type = real
-  kind = kind_phys
-[con_rd]
-  standard_name = gas_constant_of_dry_air
-  long_name = ideal gas constant for dry air
-  units = J kg-1 K-1
-  dimensions = ()
-  type = real
-  kind = kind_phys
-[con_eps]
-  standard_name = ratio_of_dry_air_to_water_vapor_gas_constants
-  long_name = rd/rv
-  units = none
-  dimensions = ()
-  type = real
-  kind = kind_phys
-[con_epsm1]
-  standard_name = ratio_of_dry_air_to_water_vapor_gas_constants_minus_one
-  long_name = (rd/rv) - 1
-  units = none
-  dimensions = ()
-  type = real
-  kind = kind_phys
-[con_fvirt]
-  standard_name = ratio_of_vapor_to_dry_air_gas_constants_minus_one
-  long_name = (rv/rd) - 1 (rv = ideal gas constant for water vapor)
-  units = none
-  dimensions = ()
-  type = real
-  kind = kind_phys
-[con_g]
-  standard_name = gravitational_acceleration
-  long_name = gravitational acceleration
-  units = m s-2
-  dimensions = ()
-  type = real
-  kind = kind_phys
-[con_tice]
-  standard_name = freezing_point_temperature_of_seawater
-  long_name = freezing point temperature of seawater
-  units = K
-  dimensions = ()
-  type = real
-  kind = kind_phys
-[con_rocp]
-  standard_name = ratio_of_gas_constant_dry_air_to_specific_heat_of_dry_air_at_constant_pressure
-  long_name = (rd/cp)
-  units = none
-  dimensions = ()
-  type = real
-  kind = kind_phys
-[karman]
-  standard_name = von_karman_constant
-  long_name = von karman constant
-  units = none
-  dimensions = ()
-  type = real

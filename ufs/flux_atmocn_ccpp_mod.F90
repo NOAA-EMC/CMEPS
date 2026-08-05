@@ -326,7 +326,7 @@ contains
 
        ! run CCPP init
        ! TODO: suite name need to be provided by ESMF config file
-       call med_ccpp_driver_init(trim(aoflux_ccpp_suite))
+       call med_ccpp_driver_init(aoflux_ccpp_suite)
     end if
 
     ! fill in atmospheric forcing
@@ -394,7 +394,7 @@ contains
 
     ! run CCPP physics
     ! TODO: suite name need to be provided by ESMF config file
-    call med_ccpp_driver_run(trim(aoflux_ccpp_suite), 'physics')
+    call med_ccpp_driver_run(aoflux_ccpp_suite)
 
     ! unit and sign conversion to be consistent with other flux scheme (CESM)
     do n = 1, nMax

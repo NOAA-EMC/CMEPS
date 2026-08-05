@@ -4,9 +4,6 @@ module MED_typedefs
 !! \htmlinclude MED_typedefs.html
 !!
   use machine,  only: kind_phys
-  use physcons, only: con_hvap, con_cp, con_rd, con_eps, con_rocp
-  use physcons, only: con_epsm1, con_fvirt, con_g
-  use physcons, only: con_tice, karman
 
   implicit none
 
@@ -21,8 +18,7 @@ module MED_typedefs
 !! \htmlinclude MED_init_type.html
 !!
   type MED_init_type
-    integer                       :: im                     !< horizontal loop extent
-    integer                       :: nCol                   !< horizontal dimension 
+    integer                       :: im                   !< horizontal dimension 
   end type MED_init_type
 
 !! \section arg_table_MED_statein_type
