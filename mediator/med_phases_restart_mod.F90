@@ -187,11 +187,13 @@ contains
     character(ESMF_MAXSTR)     :: restart_file   ! Local path to restart filename
     character(ESMF_MAXSTR)     :: restart_pfile  ! Local path to restart pointer filename
     character(ESMF_MAXSTR)     :: restart_dir    ! Optional restart directory name
-    character(ESMF_MAXSTR)     :: cvalue         ! attribute string
+    character(ESMF_MAXSTR)     :: cvalue, value  ! attribute string
     character(ESMF_MAXSTR)     :: cpl_inst_tag   ! instance tag
+    character(ESMF_MAXSTR), allocatable     :: log_dir        ! Optional log file directory name
     logical                    :: alarmIsOn      ! generic alarm flag
     real(R8)                   :: tbnds(2)       ! CF1.0 time bounds
-    logical                    :: isPresent
+    logical                    :: isPresent, isSet
+    logical                    :: log_to_restart ! Write log file to CMEPS restart dir
     logical                    :: first_time = .true.
 #ifndef CESMCOUPLED
     logical                    :: write_restartfh
@@ -223,6 +225,12 @@ contains
     else
        restart_dir = ""
     endif
+
+    log_to_restart = .false.
+    call NUOPC_CompAttributeGet(gcomp, name='cmeps_write_log_to_restart_dir', value=value, &
+              isPresent=isPresent, isSet=isSet, rc=rc)
+    if (ChkErr(rc,__LINE__,u_FILE_u)) return
+    if(isPresent .and. isSet) log_to_restart=(trim(value)=="true")
 
     if (first_time) then
        call med_phases_restart_alarm_init(gcomp, rc)
@@ -495,7 +503,8 @@ contains
        if (ChkErr(rc,__LINE__,u_FILE_u)) return
 #ifndef CESMCOUPLED
        if (maintask) then
-         call log_restart_fh(nextTime, startTime, 'cmeps', rc=rc)
+         if (log_to_restart) log_dir=restart_dir
+         call log_restart_fh(nextTime, startTime, 'cmeps', output_dir=log_dir, rc=rc)
          if (ChkErr(rc,__LINE__,u_FILE_u)) return
        endif
 #endif
