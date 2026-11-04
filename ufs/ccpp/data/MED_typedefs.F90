@@ -3,7 +3,7 @@ module MED_typedefs
 !> \section arg_table_MED_typedefs
 !! \htmlinclude MED_typedefs.html
 !!
-  use machine,  only: kind_phys
+  use ccpp_kinds,  only: kind_phys
 
   implicit none
 
