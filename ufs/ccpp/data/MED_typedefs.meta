@@ -2,8 +2,7 @@
 [ccpp-table-properties]
   name = MED_typedefs
   type = host
-  dependencies_path = ../../../../../UFSATM/ccpp/physics/physics/hooks
-  dependencies = machine.F
+  dependencies =
 
 [ccpp-arg-table]
   name = MED_typedefs
@@ -1088,6 +1087,7 @@
   name = MED_grid_type
   type = ddt
   dependencies =
+
 [ccpp-arg-table]
   name = MED_grid_type
   type = ddt
